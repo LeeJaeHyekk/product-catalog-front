@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   
   // Turbopack 설정 (Next.js 16 기본)
-  // kiwi-nlp는 선택적 의존성이므로 동적 import로 처리되어 빌드 시 경고만 발생 (에러 아님)
+  // kiwi-nlp는 선택적 의존성이므로 동적 import로 처리
   turbopack: {
     // 빈 설정으로 Turbopack 사용 명시 (webpack 설정과 충돌 방지)
   },
