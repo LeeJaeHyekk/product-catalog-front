@@ -7,7 +7,7 @@
 
 export const STYLES = {
   // 상품 카드
-  productCard: 'product-card relative border border-gray-200 rounded-lg overflow-hidden bg-white transition-all duration-200',
+  productCard: 'product-card relative border border-gray-200 rounded-lg overflow-hidden bg-white shadow-md hover:shadow-lg transition-all duration-200 backdrop-blur-sm',
   productCardSoldOut: 'opacity-50 grayscale',
   
   // 이미지
