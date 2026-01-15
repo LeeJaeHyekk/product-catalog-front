@@ -2,7 +2,7 @@
  * 점수 조정 모듈
  */
 
-import { splitIntoWords } from '../../utils/string-utils'
+// splitIntoWords는 현재 사용되지 않음
 import type { WordMatchInfo } from '../../scoring/score-calculator'
 import type { CoreNounMatchResult } from './core-noun-matcher'
 import type { ModifierMatchResult } from './modifier-matcher'
