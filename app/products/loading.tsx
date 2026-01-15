@@ -1,5 +1,5 @@
-import { Container } from '@/components/layout/Container'
-import { ProductGridSkeleton } from '@/components/product/ProductGridSkeleton'
+import { Container } from '@/components/layout'
+import { ProductGridSkeleton } from '@/components/product'
 
 /**
  * 상품 목록 페이지 로딩 상태

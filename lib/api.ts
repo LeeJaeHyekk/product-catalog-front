@@ -1,7 +1,8 @@
 import type { Product } from './types'
 import { isApiResponse, isProductArray } from './guards'
-
-const API_URL = 'https://api.zeri.pics'
+import { API_URL, API_TIMEOUT, MAX_RETRIES, RETRY_DELAY, PRODUCT_INDEX_MIN, PRODUCT_INDEX_MAX } from './constants'
+import { parsePrice, clamp, safeTrim } from './utils'
+import { ApiError, ValidationError } from './errors'
 
 interface ApiResponseItem {
   index: number
@@ -18,28 +19,12 @@ interface ApiResponse {
 }
 
 /**
- * price 값을 숫자로 변환
- */
-function parsePrice(price: string | number): number {
-  if (typeof price === 'number') {
-    return price >= 0 ? price : 0
-  }
-  
-  if (typeof price === 'string') {
-    const parsed = parseInt(price.replace(/[^0-9]/g, ''), 10)
-    return isNaN(parsed) ? 0 : parsed
-  }
-  
-  return 0
-}
-
-/**
  * API 응답 아이템을 Product로 변환
  */
 function mapToProduct(item: ApiResponseItem): Product {
   return {
-    index: Math.max(0, Math.min(49, item.index)), // 0~49 범위로 제한
-    name: String(item.name || '').trim() || '상품명 없음',
+    index: clamp(item.index, PRODUCT_INDEX_MIN, PRODUCT_INDEX_MAX),
+    name: safeTrim(item.name, '상품명 없음'),
     price: parsePrice(item.price),
     current: Math.max(0, item.current),
     limit: Math.max(1, item.limit), // 최소 1
@@ -53,7 +38,7 @@ function mapToProduct(item: ApiResponseItem): Product {
 async function fetchWithTimeout(
   url: string,
   options: RequestInit = {},
-  timeout = 10000
+  timeout = API_TIMEOUT
 ): Promise<Response> {
   const controller = new AbortController()
   const timeoutId = setTimeout(() => controller.abort(), timeout)
@@ -68,7 +53,7 @@ async function fetchWithTimeout(
   } catch (error) {
     clearTimeout(timeoutId)
     if (error instanceof Error && error.name === 'AbortError') {
-      throw new Error('Request timeout: API 응답이 너무 오래 걸립니다.')
+      throw new ApiError('API 응답이 너무 오래 걸립니다. 잠시 후 다시 시도해주세요.', 504)
     }
     throw error
   }
@@ -80,8 +65,8 @@ async function fetchWithTimeout(
 async function fetchWithRetry(
   url: string,
   options: RequestInit = {},
-  maxRetries = 3,
-  retryDelay = 1000
+  maxRetries = MAX_RETRIES,
+  retryDelay = RETRY_DELAY
 ): Promise<Response> {
   let lastError: Error | null = null
 
@@ -95,7 +80,10 @@ async function fetchWithRetry(
 
       // 4xx 에러는 재시도하지 않음
       if (response.status >= 400 && response.status < 500) {
-        throw new Error(`API Error: ${response.status} ${response.statusText}`)
+        throw new ApiError(
+          `서버 오류가 발생했습니다: ${response.status} ${response.statusText}`,
+          response.status
+        )
       }
 
       // 5xx 에러는 재시도
@@ -104,7 +92,10 @@ async function fetchWithRetry(
         continue
       }
 
-      throw new Error(`API Error: ${response.status} ${response.statusText}`)
+      throw new ApiError(
+        `서버 오류가 발생했습니다: ${response.status} ${response.statusText}`,
+        response.status
+      )
     } catch (error) {
       lastError = error instanceof Error ? error : new Error('Unknown error')
       
@@ -117,7 +108,7 @@ async function fetchWithRetry(
     }
   }
 
-  throw lastError || new Error('Failed to fetch products')
+  throw lastError || new ApiError('상품 데이터를 불러오는데 실패했습니다.')
 }
 
 export async function fetchProducts(): Promise<Product[]> {
@@ -132,7 +123,7 @@ export async function fetchProducts(): Promise<Product[]> {
     
     // 타입 가드를 사용한 런타임 검증
     if (!isApiResponse(data)) {
-      throw new Error('Invalid response format: expected object with content array')
+      throw new ValidationError('API 응답 형식이 올바르지 않습니다.')
     }
     
     // content 배열 검증
@@ -153,7 +144,7 @@ export async function fetchProducts(): Promise<Product[]> {
         .map(mapToProduct)
       
       if (products.length === 0) {
-        throw new Error('No valid products found in response')
+        throw new ValidationError('유효한 상품 데이터가 없습니다.')
       }
       
       return products
@@ -162,15 +153,24 @@ export async function fetchProducts(): Promise<Product[]> {
     // 타입 가드 통과 시 직접 변환
     return data.content.map(mapToProduct)
   } catch (error) {
-    // 에러 로깅
-    console.error('Failed to fetch products:', error)
-    
-    // 사용자 친화적인 에러 메시지
-    if (error instanceof Error) {
-      throw new Error(`상품 데이터를 불러오는데 실패했습니다: ${error.message}`)
+    // 이미 AppError인 경우 그대로 재던지기
+    if (error instanceof ApiError || error instanceof ValidationError) {
+      throw error
     }
     
-    throw new Error('상품 데이터를 불러오는데 실패했습니다.')
+    // 네트워크 에러 또는 기타 에러 처리
+    if (error instanceof Error) {
+      // 네트워크 에러인 경우
+      if (error.name === 'AbortError' || error.message.includes('fetch')) {
+        throw new ApiError('네트워크 연결에 실패했습니다. 잠시 후 다시 시도해주세요.', 503)
+      }
+      
+      // 기타 에러는 ApiError로 래핑
+      throw new ApiError(`상품 데이터를 불러오는데 실패했습니다: ${error.message}`)
+    }
+    
+    // 알 수 없는 에러
+    throw new ApiError('상품 데이터를 불러오는데 실패했습니다.')
   }
 }
 

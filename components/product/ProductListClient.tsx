@@ -1,6 +1,6 @@
 'use client'
 
-import { useProducts } from '@/hooks/useProducts'
+import { useProducts } from '@/hooks'
 import { ProductGrid } from './ProductGrid'
 
 export function ProductListClient() {

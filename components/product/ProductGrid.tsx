@@ -1,6 +1,8 @@
 'use client'
 
-import type { ProcessedProduct } from '@/lib/types'
+import type { ProcessedProduct } from '@/lib'
+import { createProductKey, STYLES } from '@/lib'
+import { EmptyState } from '@/components/ui'
 import { ProductCard } from './ProductCard'
 
 interface ProductGridProps {
@@ -9,11 +11,7 @@ interface ProductGridProps {
 
 export function ProductGrid({ products }: ProductGridProps) {
   if (products.length === 0) {
-    return (
-      <div className="empty-state text-center py-12">
-        <p className="text-gray-500">표시할 상품이 없습니다.</p>
-      </div>
-    )
+    return <EmptyState message="표시할 상품이 없습니다." />
   }
   
   const available = products.filter(p => !p.isSoldOut)
@@ -21,18 +19,18 @@ export function ProductGrid({ products }: ProductGridProps) {
   
   if (available.length === 0 && soldOut.length > 0) {
     return (
-      <div className="empty-state text-center py-12">
-        <p className="text-gray-500">현재 판매 가능한 상품이 없습니다.</p>
-        <p className="text-gray-400 text-sm mt-2">품절 상품만 표시됩니다.</p>
-      </div>
+      <EmptyState 
+        message="현재 판매 가능한 상품이 없습니다."
+        subMessage="품절 상품만 표시됩니다."
+      />
     )
   }
   
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+    <div className={STYLES.grid}>
       {products.map((product, idx) => (
         <ProductCard 
-          key={`${product.index}-${product.name}-${idx}`} 
+          key={createProductKey(product, idx)} 
           product={product} 
         />
       ))}

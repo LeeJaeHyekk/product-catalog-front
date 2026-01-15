@@ -1,5 +1,7 @@
 import type { Product, ProcessedProduct } from './types'
 import { isNotNull, isArray } from './guards'
+import { PRODUCT_INDEX_MIN, PRODUCT_INDEX_MAX } from './constants'
+import { clamp, safeTrim } from './utils'
 
 /**
  * 안전한 processProducts 함수
@@ -36,8 +38,8 @@ export function processProducts(products: Product[]): ProcessedProduct[] {
     .map(p => ({
       ...p,
       // 데이터 정규화
-      index: Math.max(0, Math.min(49, p.index)),
-      name: String(p.name).trim() || '상품명 없음',
+      index: clamp(p.index, PRODUCT_INDEX_MIN, PRODUCT_INDEX_MAX),
+      name: safeTrim(p.name, '상품명 없음'),
       price: Math.max(0, p.price),
       current: Math.max(0, p.current),
       limit: Math.max(1, p.limit),

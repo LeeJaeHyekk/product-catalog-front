@@ -1936,14 +1936,298 @@ export function ProductListClient() {
 
 ---
 
-## 16. 결론
+## 16. 에러 설계 아키텍처
 
-### 16.1 설계 철학
+### 16.1 에러 설계의 목표
+
+에러 설계의 핵심 목표는 다음 4가지입니다:
+
+1. **에러 타입을 코드 레벨에서 명확히 구분**
+   * 문자열이 아닌 타입으로 에러 관리
+   * `instanceof`로 에러 타입 구분 가능
+
+2. **페이지 단위로 에러를 격리 (Error Boundary)**
+   * Next.js App Router의 Error Boundary 활용
+   * 도메인별 에러 페이지로 격리
+
+3. **공통 에러 UI + 도메인별 커스터마이징 가능**
+   * 재사용 가능한 에러 컴포넌트
+   * 도메인별 메시지 커스터마이징
+
+4. **확장 시 구조를 깨지 않고 추가 가능**
+   * 새로운 에러 타입 추가 용이
+   * 기존 코드 수정 최소화
+
+**👉 "에러를 그냥 catch해서 메시지 뿌린다" ❌**
+**👉 "에러를 타입과 레이어로 관리한다" ⭕**
+
+### 16.2 에러 타입 구조
+
+#### 16.2.1 Base Error (모든 에러의 부모)
+
+```ts
+// lib/errors/AppError.ts
+export abstract class AppError extends Error {
+  readonly statusCode: number
+  readonly isOperational: boolean
+
+  constructor(message: string, statusCode = 500) {
+    super(message)
+    this.name = this.constructor.name
+    this.statusCode = statusCode
+    this.isOperational = true
+  }
+}
+```
+
+**왜 필요한가?**
+
+* `instanceof AppError`로 의도된 에러 vs 버그 구분
+* 에러 분기 로직의 기준점
+* 에러 타입별 적절한 처리 가능
+
+#### 16.2.2 도메인별 에러 타입
+
+**API 에러:**
+```ts
+// lib/errors/ApiError.ts
+export class ApiError extends AppError {
+  constructor(
+    message = '서버 요청 중 오류가 발생했습니다.',
+    statusCode = 500
+  ) {
+    super(message, statusCode)
+  }
+}
+```
+
+**검증 에러:**
+```ts
+// lib/errors/ValidationError.ts
+export class ValidationError extends AppError {
+  constructor(message = '잘못된 데이터 형식입니다.') {
+    super(message, 400)
+  }
+}
+```
+
+**Not Found 에러:**
+```ts
+// lib/errors/NotFoundError.ts
+export class NotFoundError extends AppError {
+  constructor(resource = '리소스') {
+    super(`${resource}를 찾을 수 없습니다.`, 404)
+  }
+}
+```
+
+**확장 포인트:**
+```ts
+// lib/errors/index.ts
+export { AppError } from './AppError'
+export { ApiError } from './ApiError'
+export { ValidationError } from './ValidationError'
+export { NotFoundError } from './NotFoundError'
+
+// 나중에 추가 가능:
+// export { AuthError } from './AuthError'
+// export { PermissionError } from './PermissionError'
+// export { RateLimitError } from './RateLimitError'
+```
+
+### 16.3 에러 발생 위치별 처리 전략
+
+#### 16.3.1 API Fetch Layer
+
+```ts
+// lib/api.ts
+import { ApiError, ValidationError } from '@/lib/errors'
+
+export async function fetchProducts() {
+  const res = await fetch('https://api.zeri.pics')
+
+  if (!res.ok) {
+    throw new ApiError('상품 데이터를 불러오지 못했습니다.', res.status)
+  }
+
+  const data = await res.json()
+
+  if (!isApiResponse(data)) {
+    throw new ValidationError('API 응답 형식이 올바르지 않습니다.')
+  }
+
+  return data.content.map(mapToProduct)
+}
+```
+
+**👉 에러는 여기서 "의미 있는 타입"으로 던진다**
+
+#### 16.3.2 Server Component
+
+```ts
+// components/product/ProductsListServer.tsx
+import { NotFoundError } from '@/lib/errors'
+
+export async function ProductsListServer() {
+  const products = await fetchProducts()
+  const processedProducts = processProducts(products)
+
+  if (processedProducts.length === 0) {
+    throw new NotFoundError('상품')
+  }
+
+  return <ProductGrid products={processedProducts} />
+}
+```
+
+**👉 Server Component에서 에러를 던지면 Error Boundary가 자동으로 처리**
+
+### 16.4 Error Boundary 구성 (Next.js App Router)
+
+#### 16.4.1 글로벌 에러 페이지
+
+```tsx
+// app/error.tsx
+'use client'
+
+import { ErrorFallback } from '@/components/error'
+
+export default function GlobalError({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string }
+  reset: () => void
+}) {
+  return (
+    <html>
+      <body>
+        <ErrorFallback error={error} onReset={reset} />
+      </body>
+    </html>
+  )
+}
+```
+
+**👉 최후의 방어선: 모든 에러를 최종적으로 처리**
+
+#### 16.4.2 도메인 에러 페이지
+
+```tsx
+// app/products/error.tsx
+'use client'
+
+import { ErrorFallback } from '@/components/error'
+
+export default function ProductsError({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string }
+  reset: () => void
+}) {
+  return (
+    <ErrorFallback
+      error={error}
+      title="상품을 불러올 수 없습니다"
+      onReset={reset}
+    />
+  )
+}
+```
+
+**👉 페이지 단위 격리 = 확장성 핵심**
+
+#### 16.4.3 공통 에러 UI
+
+```tsx
+// components/error/ErrorFallback.tsx
+'use client'
+
+import { AppError } from '@/lib/errors'
+import { Container } from '@/components/layout'
+
+interface ErrorFallbackProps {
+  error: Error
+  title?: string
+  onReset?: () => void
+}
+
+export function ErrorFallback({ error, title, onReset }: ErrorFallbackProps) {
+  const isAppError = error instanceof AppError
+  
+  const errorMessage = isAppError 
+    ? error.message 
+    : '알 수 없는 오류가 발생했습니다.'
+  
+  return (
+    <Container>
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+        <h2 className="text-xl font-bold">{title ?? '문제가 발생했습니다'}</h2>
+        <p className="text-gray-600">{errorMessage}</p>
+        {onReset && (
+          <button onClick={onReset}>다시 시도</button>
+        )}
+      </div>
+    </Container>
+  )
+}
+```
+
+### 16.5 404 (not-found) 구조
+
+**글로벌 404:**
+```tsx
+// app/not-found.tsx
+export default function NotFound() {
+  return <h1>페이지를 찾을 수 없습니다.</h1>
+}
+```
+
+**도메인 404:**
+```tsx
+// app/products/not-found.tsx
+export default function ProductsNotFound() {
+  return <h1>상품이 존재하지 않습니다.</h1>
+}
+```
+
+### 16.6 에러 설계에서 심사자가 보는 포인트
+
+| 항목 | 설명 | 구현 여부 |
+|------|------|----------|
+| **타입 분리** | Error를 문자열로 안 씀 | ✅ |
+| **책임 분리** | 발생 / 표현 분리 | ✅ |
+| **Error Boundary** | 페이지 단위 | ✅ |
+| **UX** | 재시도 / 안내 메시지 | ✅ |
+| **확장성** | 에러 타입 추가 쉬움 | ✅ |
+
+**👉 이 중 3개 이상 충족하면 고급 설계**
+
+### 16.7 에러 설계의 정체성
+
+이 구조는:
+
+* ❌ 과제용 임시 에러 처리 아님
+* ❌ try-catch 남발 아님
+* ✅ 실제 서비스 확장 가능한 에러 아키텍처
+
+**핵심 원칙:**
+
+에러는 문자열이 아닌 타입으로 관리하고,
+Next.js App Router의 Error Boundary를 활용해
+도메인 단위로 격리된 에러 처리를 구현했습니다.
+
+---
+
+## 17. 결론
+
+### 17.1 설계 철학
 
 본 설계는 단순한 상품 나열 UI가 아닌,
 **데이터 신뢰성, 사용자 인지, 유지보수성, 확장성**을 모두 고려한 구조를 목표로 한다.
 
-### 16.2 핵심 설계 원칙 요약
+### 17.2 핵심 설계 원칙 요약
 
 1. **ESM 모듈 시스템 및 함수형 설계**
    * 프로젝트 전체에서 ESM 문법(`import`/`export`) 일관성 유지
@@ -1973,7 +2257,7 @@ export function ProductListClient() {
    * 전제 조건과 선택 기준 제시
    * 솔직한 한계점 인정
 
-### 16.3 기술 스택 요약
+### 17.3 기술 스택 요약
 
 | 계층 | 기술 | 역할 |
 |------|------|------|

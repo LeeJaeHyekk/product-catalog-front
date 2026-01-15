@@ -1,3 +1,4 @@
+import { SKELETON_COUNT, STYLES } from '@/lib'
 import { ProductSkeleton } from './ProductSkeleton'
 
 /**
@@ -8,11 +9,10 @@ import { ProductSkeleton } from './ProductSkeleton'
  */
 export function ProductGridSkeleton() {
   // 실제 상품 개수(50개)와 유사하게 표시하여 체감 속도 향상
-  const skeletonCount = 10
   
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-      {Array.from({ length: skeletonCount }).map((_, idx) => (
+    <div className={STYLES.grid}>
+      {Array.from({ length: SKELETON_COUNT }).map((_, idx) => (
         <ProductSkeleton key={idx} />
       ))}
     </div>

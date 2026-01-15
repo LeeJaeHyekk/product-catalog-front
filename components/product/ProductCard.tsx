@@ -1,4 +1,6 @@
-import type { ProcessedProduct } from '@/lib/types'
+import type { ProcessedProduct } from '@/lib'
+import { formatPrice } from '@/lib/utils'
+import { STYLES } from '@/lib/styles'
 import { SoldOutBadge } from './SoldOutBadge'
 
 interface ProductCardProps {
@@ -10,12 +12,12 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <article 
-      className={`product-card relative ${isSoldOut ? 'opacity-50 grayscale' : ''}`}
-      aria-label={`${name}, ${price.toLocaleString()}원`}
+      className={`${STYLES.productCard} ${isSoldOut ? STYLES.productCardSoldOut : ''}`}
+      aria-label={`${name}, ${formatPrice(price)}`}
     >
       {isSoldOut && <SoldOutBadge />}
       
-      <div className="image-wrapper aspect-square bg-gray-100 rounded overflow-hidden">
+      <div className={STYLES.imageWrapper}>
         {image ? (
           <img 
             src={image} 
@@ -25,7 +27,7 @@ export function ProductCard({ product }: ProductCardProps) {
           />
         ) : (
           <div 
-            className="w-full h-full flex items-center justify-center text-gray-400 text-sm"
+            className={STYLES.imagePlaceholder}
             aria-label="이미지 준비중"
           >
             이미지 준비중
@@ -33,22 +35,20 @@ export function ProductCard({ product }: ProductCardProps) {
         )}
       </div>
       
-      <div className="product-info mt-2">
-        <h2 className="product-name font-semibold text-sm">{name}</h2>
+      <div className={STYLES.productInfo}>
+        <h2 className={STYLES.productName}>{name}</h2>
         <p 
-          className="price text-lg font-bold mt-1"
-          aria-label={`가격 ${price.toLocaleString()}원`}
+          className={STYLES.price}
+          aria-label={`가격 ${formatPrice(price)}`}
         >
-          {price.toLocaleString()}원
+          {formatPrice(price)}
         </p>
         <button 
           disabled={isSoldOut}
           aria-label={isSoldOut ? `${name} - 품절` : `${name} - 구매하기`}
           aria-disabled={isSoldOut}
-          className={`mt-2 w-full py-2 px-4 rounded ${
-            isSoldOut 
-              ? 'bg-gray-300 cursor-not-allowed text-gray-500' 
-              : 'bg-blue-500 text-white hover:bg-blue-600'
+          className={`${STYLES.button} ${
+            isSoldOut ? STYLES.buttonSoldOut : STYLES.buttonActive
           }`}
         >
           {isSoldOut ? '품절' : '구매하기'}

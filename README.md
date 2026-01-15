@@ -10,6 +10,7 @@ Next.js + TypeScript 기반의 상품 목록 UI 구현 프로젝트입니다.
 - ✅ 반응형 디자인 (Mobile/Tablet/PC)
 - ✅ TanStack Query 기반 서버 상태 관리
 - ✅ ESM 모듈 시스템 및 함수형 설계
+- ✅ 타입 기반 에러 처리 및 Error Boundary
 
 ## 기술 스택
 
@@ -45,7 +46,18 @@ hooks/
 lib/
  ├─ api.ts                 # API 호출
  ├─ product.ts             # 정렬/품절 처리 로직
- └─ types.ts               # 타입 정의
+ ├─ types.ts               # 타입 정의
+ └─ errors/                # 에러 타입 정의
+    ├─ AppError.ts
+    ├─ ApiError.ts
+    ├─ ValidationError.ts
+    └─ NotFoundError.ts
+
+components/
+ └─ error/                 # 에러 UI 컴포넌트
+    ├─ ErrorFallback.tsx
+    ├─ ErrorMessage.tsx
+    └─ ErrorActions.tsx
 ```
 
 ## 시작하기
@@ -105,6 +117,14 @@ npm start
 - 레이아웃 시프트 방지 (CLS 개선)
 - 품절 상품 명확한 시각적 구분
 - 접근성(A11y) 고려
+
+### 에러 처리
+
+- **타입 기반 에러 관리**: 에러는 문자열이 아닌 타입으로 관리하고, Next.js App Router의 Error Boundary를 활용해 도메인 단위로 격리된 에러 처리를 구현
+- **에러 타입 분리**: `AppError`, `ApiError`, `ValidationError`, `NotFoundError` 등 명확한 에러 타입 구분
+- **Error Boundary**: 페이지 단위로 에러 격리 (`app/error.tsx`, `app/products/error.tsx`)
+- **공통 에러 UI**: 재사용 가능한 `ErrorFallback` 컴포넌트로 일관된 에러 UX 제공
+- **확장 가능한 구조**: 새로운 에러 타입 추가 시 기존 코드 수정 최소화
 
 ### 렌더링 최적화 전략
 

@@ -1,7 +1,6 @@
 import { Suspense } from 'react'
-import { Container } from '@/components/layout/Container'
-import { ProductGridSkeleton } from '@/components/product/ProductGridSkeleton'
-import { ProductsListServer } from '@/components/product/ProductsListServer'
+import { Container } from '@/components/layout'
+import { ProductGridSkeleton, ProductsListServer } from '@/components/product'
 
 /**
  * 상품 목록 페이지
