@@ -4,7 +4,8 @@
 
 import { splitIntoWords } from '../../utils/string-utils'
 import { koreanToRoman, generateRomanVariants } from '../../converters/korean-converter'
-import type { MorphologyResult } from '../../morphology'
+// MorphologyResult는 현재 사용되지 않음 (향후 확장 가능)
+// import type { MorphologyResult } from '../../morphology'
 
 /**
  * 핵심 명사 매칭 결과
@@ -19,7 +20,7 @@ export interface CoreNounMatchResult {
  * 핵심 명사가 매칭되었는지 확인
  */
 export function matchCoreNouns(
-  nounTokens: Array<{ word: string; type: string }>,
+  nounTokens: Array<{ word: string; type: string; confidence?: number }>,
   imageWords: string[]
 ): CoreNounMatchResult {
   let coreNounMatched = false
@@ -27,7 +28,14 @@ export function matchCoreNouns(
   
   for (const nounToken of nounTokens) {
     const nounRoman = koreanToRoman(nounToken.word)
-    const nounVariants = generateRomanVariants(nounToken.word, { tokens: [nounToken], coreWords: [nounToken.word] })
+    const semanticToken = {
+      word: nounToken.word,
+      type: (nounToken.type === 'noun' || nounToken.type === 'adjective' || nounToken.type === 'prefix' || nounToken.type === 'suffix' 
+        ? nounToken.type 
+        : 'unknown') as 'noun' | 'adjective' | 'prefix' | 'suffix' | 'unknown',
+      confidence: nounToken.confidence ?? 0.8,
+    }
+    const nounVariants = generateRomanVariants(nounToken.word, { tokens: [semanticToken], coreWords: [nounToken.word] })
     const allNounVariants = [nounRoman, ...nounVariants]
     
     // 각 변형을 단어로 분리하여 매칭 확인

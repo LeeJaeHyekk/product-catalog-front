@@ -29,7 +29,14 @@ export function matchModifiers(
   
   for (const modifierToken of modifierTokens) {
     const modifierRoman = koreanToRoman(modifierToken.word)
-    const modifierVariants = generateRomanVariants(modifierToken.word, { tokens: [modifierToken], coreWords: [modifierToken.word] })
+    const semanticToken = {
+      word: modifierToken.word,
+      type: (modifierToken.type === 'noun' || modifierToken.type === 'adjective' || modifierToken.type === 'prefix' || modifierToken.type === 'suffix' 
+        ? modifierToken.type 
+        : 'unknown') as 'noun' | 'adjective' | 'prefix' | 'suffix' | 'unknown',
+      confidence: 0.8,
+    }
+    const modifierVariants = generateRomanVariants(modifierToken.word, { tokens: [semanticToken], coreWords: [modifierToken.word] })
     const allModifierVariants = [modifierRoman, ...modifierVariants]
     
     for (const variant of allModifierVariants) {

@@ -10,7 +10,7 @@ import type { ImageFile, MatchResult } from '../types'
  * 정확한 매칭 시도
  */
 export function tryExactMatch(
-  productName: string,
+  _productName: string, // 원본 상품명 (현재 사용되지 않음, 인터페이스 호환성을 위해 유지)
   imageFile: ImageFile,
   normalizedProduct: string,
   productRoman: string

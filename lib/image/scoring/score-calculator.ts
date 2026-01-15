@@ -191,113 +191,112 @@ export function calculateWordMatchInfo(
       if (!pWord || pWord.length < 2) {
         continue
       }
-      {
-        let bestMatch = 0
-        let bestMatchIndex = -1
-        const isCoreNoun = coreNounSet.has(pWord.toLowerCase())
+      
+      let bestMatch = 0
+      let bestMatchIndex = -1
+      const isCoreNoun = coreNounSet.has(pWord.toLowerCase())
+      
+      for (let j = 0; j < imageWordList.length; j++) {
+        const iWord = imageWordList[j]
+        if (!iWord) {
+          continue
+        }
         
-        for (let j = 0; j < imageWordList.length; j++) {
-          const iWord = imageWordList[j]
-          if (!iWord) {
-            continue
-          }
-          
-          // 완전히 다른 단어는 제외 (길이 차이가 너무 크면 제외)
-          const lengthDiff = Math.abs(pWord.length - iWord.length)
-          const maxLength = Math.max(pWord.length, iWord.length)
-          if (lengthDiff > maxLength * 0.5) continue // 길이 차이가 50% 이상이면 제외
-          
-          // 공통 부분이 너무 작으면 제외 (최소 3글자 이상 공통)
-          const commonLength = Math.min(pWord.length, iWord.length)
-          if (commonLength < 3) continue
-          
-          // 실제 공통 부분 계산 (연속된 공통 부분)
-          let actualCommonLength = 0
-          const minLen = Math.min(pWord.length, iWord.length)
-          for (let k = 0; k < minLen; k++) {
-            if (pWord[k] === iWord[k]) {
-              actualCommonLength++
-            } else {
-              break
-            }
-          }
-          
-          // 연속된 공통 부분이 최소 3글자 이상이어야 함
-          if (actualCommonLength < 3 && !iWord.includes(pWord) && !pWord.includes(iWord)) {
-            continue
-          }
-          
-          if (iWord.includes(pWord) || pWord.includes(iWord)) {
-            const matchScore = Math.min(pWord.length, iWord.length) / Math.max(pWord.length, iWord.length)
-            // 공통 부분 비율도 고려
-            const commonRatio = actualCommonLength > 0 ? actualCommonLength / Math.max(pWord.length, iWord.length) : matchScore
-            let finalScore = matchScore * 0.7 + commonRatio * 0.3
-            
-            // 핵심 명사는 가중치 증가
-            if (isCoreNoun) {
-              finalScore = Math.min(1.0, finalScore * 1.2)
-            }
-            
-            if (finalScore > bestMatch) {
-              bestMatch = finalScore
-              bestMatchIndex = j
-            }
-          } else if (iWord.startsWith(pWord) || pWord.startsWith(iWord)) {
-            const matchScore = Math.min(pWord.length, iWord.length) / Math.max(pWord.length, iWord.length) * 0.9
-            const commonRatio = actualCommonLength > 0 ? actualCommonLength / Math.max(pWord.length, iWord.length) : matchScore
-            let finalScore = matchScore * 0.7 + commonRatio * 0.3
-            
-            // 핵심 명사는 가중치 증가
-            if (isCoreNoun) {
-              finalScore = Math.min(1.0, finalScore * 1.2)
-            }
-            
-            if (finalScore > bestMatch) {
-              bestMatch = finalScore
-              bestMatchIndex = j
-            }
+        // 완전히 다른 단어는 제외 (길이 차이가 너무 크면 제외)
+        const lengthDiff = Math.abs(pWord.length - iWord.length)
+        const maxLength = Math.max(pWord.length, iWord.length)
+        if (lengthDiff > maxLength * 0.5) continue // 길이 차이가 50% 이상이면 제외
+        
+        // 공통 부분이 너무 작으면 제외 (최소 3글자 이상 공통)
+        const commonLength = Math.min(pWord.length, iWord.length)
+        if (commonLength < 3) continue
+        
+        // 실제 공통 부분 계산 (연속된 공통 부분)
+        let actualCommonLength = 0
+        const minLen = Math.min(pWord.length, iWord.length)
+        for (let k = 0; k < minLen; k++) {
+          if (pWord[k] === iWord[k]) {
+            actualCommonLength++
+          } else {
+            break
           }
         }
         
-        // 핵심 명사는 더 낮은 임계값으로도 매칭 허용
-        const threshold = isCoreNoun ? 0.4 : 0.5
+        // 연속된 공통 부분이 최소 3글자 이상이어야 함
+        if (actualCommonLength < 3 && !iWord.includes(pWord) && !pWord.includes(iWord)) {
+          continue
+        }
         
-        if (bestMatch > threshold) {
-          includedWords++
-          totalMatchScore += bestMatch
+        if (iWord.includes(pWord) || pWord.includes(iWord)) {
+          const matchScore = Math.min(pWord.length, iWord.length) / Math.max(pWord.length, iWord.length)
+          // 공통 부분 비율도 고려
+          const commonRatio = actualCommonLength > 0 ? actualCommonLength / Math.max(pWord.length, iWord.length) : matchScore
+          let finalScore = matchScore * 0.7 + commonRatio * 0.3
           
-          // 핵심 명사 매칭은 추가 가중치
+          // 핵심 명사는 가중치 증가
           if (isCoreNoun) {
-            totalMatchScore += 0.1
+            finalScore = Math.min(1.0, finalScore * 1.2)
           }
           
-          // 단어 순서 일치 확인
-          if (bestMatchIndex >= 0) {
-            if (bestMatchIndex === i) {
-              orderedMatches++
-            } else if (i === 0) {
-              orderedMatches++
-            } else {
-              let prevMatchIndex = -1
-              for (let k = 0; k < i; k++) {
-                const prevWord = productWordList[k]
-                if (!prevWord) {
+          if (finalScore > bestMatch) {
+            bestMatch = finalScore
+            bestMatchIndex = j
+          }
+        } else if (iWord.startsWith(pWord) || pWord.startsWith(iWord)) {
+          const matchScore = Math.min(pWord.length, iWord.length) / Math.max(pWord.length, iWord.length) * 0.9
+          const commonRatio = actualCommonLength > 0 ? actualCommonLength / Math.max(pWord.length, iWord.length) : matchScore
+          let finalScore = matchScore * 0.7 + commonRatio * 0.3
+          
+          // 핵심 명사는 가중치 증가
+          if (isCoreNoun) {
+            finalScore = Math.min(1.0, finalScore * 1.2)
+          }
+          
+          if (finalScore > bestMatch) {
+            bestMatch = finalScore
+            bestMatchIndex = j
+          }
+        }
+      }
+      
+      // 핵심 명사는 더 낮은 임계값으로도 매칭 허용
+      const threshold = isCoreNoun ? 0.4 : 0.5
+      
+      if (bestMatch > threshold) {
+        includedWords++
+        totalMatchScore += bestMatch
+        
+        // 핵심 명사 매칭은 추가 가중치
+        if (isCoreNoun) {
+          totalMatchScore += 0.1
+        }
+        
+        // 단어 순서 일치 확인
+        if (bestMatchIndex >= 0) {
+          if (bestMatchIndex === i) {
+            orderedMatches++
+          } else if (i === 0) {
+            orderedMatches++
+          } else {
+            let prevMatchIndex = -1
+            for (let k = 0; k < i; k++) {
+              const prevWord = productWordList[k]
+              if (!prevWord) {
+                continue
+              }
+              for (let m = 0; m < imageWordList.length; m++) {
+                const imgWord = imageWordList[m]
+                if (!imgWord) {
                   continue
                 }
-                for (let m = 0; m < imageWordList.length; m++) {
-                  const imgWord = imageWordList[m]
-                  if (!imgWord) {
-                    continue
-                  }
-                  if (imgWord.includes(prevWord) || prevWord.includes(imgWord)) {
-                    prevMatchIndex = m
-                    break
-                  }
+                if (imgWord.includes(prevWord) || prevWord.includes(imgWord)) {
+                  prevMatchIndex = m
+                  break
                 }
               }
-              if (prevMatchIndex >= 0 && bestMatchIndex > prevMatchIndex) {
-                orderedMatches++
-              }
+            }
+            if (prevMatchIndex >= 0 && bestMatchIndex > prevMatchIndex) {
+              orderedMatches++
             }
           }
         }
@@ -306,8 +305,8 @@ export function calculateWordMatchInfo(
   }
   
   const wordMatchRatio = includedWords > 0 ? includedWords / productWordList.length : 0
-  const avgScore = includedWords > 0 ? totalMatchScore / includedWords : 0
-  // wordInclusionScore 계산 (현재 사용되지 않음, 향후 확장 가능)
+  // avgScore와 wordInclusionScore 계산 (현재 사용되지 않음, 향후 확장 가능)
+  // const avgScore = includedWords > 0 ? totalMatchScore / includedWords : 0
   // const wordInclusionScore = (wordMatchRatio * 0.6 + avgScore * 0.4)
   
   const allWordsMatched = includedWords === productWordList.length && wordMatchRatio >= 1.0
