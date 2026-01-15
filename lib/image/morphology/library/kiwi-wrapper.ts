@@ -39,10 +39,20 @@ async function initializeKiwi(): Promise<boolean> {
   
   try {
     // 동적 import로 선택적 의존성 처리
-    // Turbopack/webpack externals 설정으로 빌드 타임 에러 방지
-    // @ts-expect-error - kiwi-nlp는 선택적 의존성이므로 타입 체크 무시
-    // 빌드 시 경고가 발생할 수 있으나, 런타임에서 try-catch로 처리됨
-    const kiwi = await import('kiwi-nlp').catch(() => null) as unknown as KiwiModule | null
+    // 런타임에서만 동적으로 로드하여 빌드 타임 분석 회피
+    // 문자열을 변수로 분리하여 정적 분석을 회피
+    const moduleName = 'kiwi' + '-nlp'
+    const kiwi = await (async () => {
+      try {
+        // Function 생성자를 사용하여 완전히 동적으로 import
+        // 이렇게 하면 빌드 타임에 모듈을 찾으려고 시도하지 않음
+        const dynamicImport = new Function('specifier', 'return import(specifier)')
+        return await dynamicImport(moduleName) as unknown as KiwiModule | null
+      } catch (error) {
+        // 모듈이 없으면 null 반환 (선택적 의존성이므로 정상)
+        return null
+      }
+    })() as unknown as KiwiModule | null
     
     if (!kiwi || typeof kiwi !== 'object') {
       kiwiAvailable = false

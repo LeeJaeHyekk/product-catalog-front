@@ -18,7 +18,7 @@ import { adjustScore } from './score-adjuster'
  * 부분 매칭 시도
  */
 export function tryPartialMatch(
-  productName: string,
+  _productName: string, // 원본 상품명 (현재 사용되지 않음, 인터페이스 호환성을 위해 유지)
   imageFile: ImageFile,
   normalizedProduct: string,
   productRoman: string,
