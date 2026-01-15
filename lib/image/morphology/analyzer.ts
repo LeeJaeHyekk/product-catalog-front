@@ -31,10 +31,22 @@ export function analyzeMorphology(
   let i = 0
   while (i < words.length) {
     const word = words[i]
+    if (!word) {
+      i++
+      continue
+    }
     
     // 공백으로 구분된 경우: 첫 번째 단어가 접두어 패턴에 매칭되는지 확인
     if (i === 0 && words.length > 1) {
       const nextWord = words[i + 1]
+      if (!nextWord) {
+        // nextWord가 undefined인 경우 일반 처리로 진행
+        const wordTokens = processWord(word, knownWords)
+        tokens.push(...wordTokens)
+        coreWords.push(...wordTokens.filter(t => t.type === 'noun' || t.type === 'adjective').map(t => t.word))
+        i++
+        continue
+      }
       const { tokens: prefixTokens, processed } = processSpaceSeparatedPrefix(word, nextWord, knownWords)
       
       if (processed) {
