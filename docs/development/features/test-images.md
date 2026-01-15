@@ -4,11 +4,7 @@
 
 ### 1. 환경 변수 설정
 
-`.env.local` 파일을 생성하고 다음을 추가하세요:
-
-```bash
-NEXT_PUBLIC_ENABLE_TEST_IMAGES=true
-```
+환경 변수 파일을 생성하고 테스트 이미지 활성화 플래그를 설정하세요.
 
 ### 2. 개발 서버 재시작
 
@@ -34,4 +30,4 @@ npm run dev
 
 ## 비활성화
 
-`.env.local` 파일에서 `NEXT_PUBLIC_ENABLE_TEST_IMAGES`를 제거하거나 `false`로 설정하면 테스트 이미지가 비활성화됩니다.
+환경 변수 파일에서 테스트 이미지 활성화 플래그를 제거하거나 `false`로 설정하면 테스트 이미지가 비활성화됩니다.

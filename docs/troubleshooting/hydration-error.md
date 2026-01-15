@@ -12,7 +12,7 @@ Hydration failed because the server rendered text didn't match the client.
 **원인 분석:**
 
 1. **API 응답의 무작위성**
-   - API (`https://api.zeri.pics`)가 무작위 순서로 데이터를 반환
+   - API가 무작위 순서로 데이터를 반환
    - 서버 렌더링 시점과 클라이언트 하이드레이션 시점에 다른 데이터 수신
    - `processProducts`로 정렬하지만, 입력 데이터 자체가 다르면 결과도 다름
 

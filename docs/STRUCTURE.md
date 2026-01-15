@@ -7,7 +7,6 @@ docs/
 ├── README.md                    # 메인 문서 인덱스
 ├── STRUCTURE.md                 # 이 파일 (구조 가이드)
 ├── CHANGELOG.md                 # 변경 이력
-├── assignment-compliance-analysis.md  # 과제 요구사항 준수 분석
 │
 ├── architecture/                # 아키텍처
 │   ├── README.md

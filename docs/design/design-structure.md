@@ -10,18 +10,18 @@ Next.js + TypeScript 환경에서 **정렬, 품절 처리, 로딩 지연 대응,
 
 
 
-## 2. 요구사항 요약
+## 2. 데이터 스펙 및 기능
 
 
 ### 2.0 데이터 목록 
-https://api.zeri.pics
+외부 API를 통해 상품 데이터를 제공받습니다.
 
 
 ### 2.1 응답 데이터 스펙
 
 | 필드명     | 타입            | 설명                  |
 | ------- | ------------- | ------------------- |
-| index   | number        | 상품 노출 순서 (0 ~ 49)   |
+| index   | number        | 상품 노출 순서 번호   |
 | name    | string        | 상품명                 |
 | price   | number        | 상품 가격               |
 | current | number        | 현재까지 주문된 수량         |
@@ -30,17 +30,17 @@ https://api.zeri.pics
 
 ---
 
-### 2.2 기능 요구사항
+### 2.2 주요 기능
 
-1. 상품 데이터는 무작위 순서로 내려오며, **index 기준 오름차순(0~49)** 으로 노출되어야 한다.
+1. 상품 데이터는 무작위 순서로 내려오며, **index 기준 오름차순**으로 노출되어야 한다.
 2. `image` 값은 null이지만, **이미지가 차지할 레이아웃 공간은 항상 확보**되어야 한다.
 3. **품절 상품(current >= limit)** 은 index와 관계없이 **목록 최하단**에 위치해야 하며,
 
    * 품절되지 않은 상품들의 index 순서는 유지되어야 한다.
    * 품절 상태임을 사용자가 즉시 인지할 수 있어야 한다.
-4. API 응답에는 **1~5초 사이의 랜덤 지연**이 존재하며, 해당 시간 동안 UX를 고려한 처리가 필요하다.
-5. **TypeScript / Next.js 사용은 필수**, 그 외 기술 스택은 자유.
-6. **PC / Mobile 반응형 UI**를 필수로 제공한다.
+4. API 응답 지연 상황에서도 UX를 고려한 처리가 필요하다.
+5. **TypeScript / Next.js 사용**, 그 외 기술 스택은 자유롭게 선택 가능.
+6. **PC / Mobile 반응형 UI**를 제공한다.
 
 ---
 
@@ -158,7 +158,7 @@ export function useProducts() {
 ## 4. 전체 아키텍처 개요
 
 ```
-API Response (https://api.zeri.pics)
+API Response
    ↓
 TanStack Query (Data Fetching + Caching)
    ↓
@@ -245,7 +245,7 @@ styles/
 ```ts
 // lib/types.ts
 export interface Product {
-  index: number;   // 0 ~ 49
+  index: number;   // 상품 순서 번호
   name: string;
   price: number;
   current: number; // 현재까지 주문된 수량
@@ -313,7 +313,7 @@ isSoldOut = current >= limit
 
 ### 7.3 핵심 비즈니스 로직 구현
 
-**요구사항을 정확히 반영한 정렬 규칙**
+**정렬 규칙**
 
 ```ts
 // lib/product.ts
@@ -421,7 +421,7 @@ export function processProducts(products: Product[]): ProcessedProduct[] {
 
 **이유:**
 
-* **1~5초 랜덤 지연 자동 처리** → 로딩 / 에러 / 캐싱 자동 관리
+* **API 응답 지연 자동 처리** → 로딩 / 에러 / 캐싱 자동 관리
 * **재시도 로직 내장** → 네트워크 오류 시 자동 재시도
 * **Stale 관리** → 데이터 갱신 전략 자동화
 * **UX 안정성** → Suspense와 통합하여 안정적인 로딩 상태 관리
@@ -1635,7 +1635,7 @@ import { z } from 'zod' // 또는 다른 스키마 검증 라이브러리
 import type { Product } from './types'
 
 const ProductSchema = z.object({
-  index: z.number().int().min(0).max(49),
+  index: z.number().int().min(0),
   name: z.string().min(1),
   price: z.number().nonnegative(),
   current: z.number().nonnegative(),
@@ -1646,7 +1646,7 @@ const ProductSchema = z.object({
 const ProductsResponseSchema = z.array(ProductSchema)
 
 export async function fetchProducts(): Promise<Product[]> {
-  const response = await fetch('https://api.zeri.pics')
+  const response = await fetch(API_ENDPOINT)
   
   if (!response.ok) {
     throw new Error(`API Error: ${response.status} ${response.statusText}`)
@@ -1671,7 +1671,7 @@ export async function fetchProducts(): Promise<Product[]> {
 
 | 환경 | 검증 전략 | 이유 |
 |------|----------|------|
-| **개발/과제 환경** | 클라이언트에서 Zod 검증 | API 신뢰성 낮음, 데이터 무결성 보장 필요 |
+| **개발 환경** | 클라이언트에서 Zod 검증 | API 신뢰성 낮음, 데이터 무결성 보장 필요 |
 | **실서비스 환경** | 서버에서 1차 검증 + 클라이언트 경량 검증 | 성능 최적화, 서버 신뢰성 높음 |
 | **대용량 환경** | 클라이언트 검증 생략 또는 최소화 | 성능 부담 최소화 |
 
@@ -1680,7 +1680,7 @@ export async function fetchProducts(): Promise<Product[]> {
 ```ts
 // lib/api.ts (실서비스 버전)
 export async function fetchProducts(): Promise<Product[]> {
-  const response = await fetch('https://api.zeri.pics')
+  const response = await fetch(API_ENDPOINT)
   
   if (!response.ok) {
     throw new Error(`API Error: ${response.status} ${response.statusText}`)
@@ -1701,7 +1701,7 @@ export async function fetchProducts(): Promise<Product[]> {
 
 **설계 원칙:**
 
-* **과제/개발 환경**: 완전한 런타임 검증 (Zod 사용)
+* **개발 환경**: 완전한 런타임 검증 (Zod 사용)
 * **실서비스 환경**: 서버 검증 전제, 클라이언트는 경량 검증 또는 생략
 * **대용량 환경**: 성능 우선, 검증 최소화
 
@@ -2044,7 +2044,7 @@ export { NotFoundError } from './NotFoundError'
 import { ApiError, ValidationError } from '@/lib/errors'
 
 export async function fetchProducts() {
-  const res = await fetch('https://api.zeri.pics')
+  const res = await fetch(API_ENDPOINT)
 
   if (!res.ok) {
     throw new ApiError('상품 데이터를 불러오지 못했습니다.', res.status)
@@ -2206,7 +2206,7 @@ export default function ProductsNotFound() {
 
 이 구조는:
 
-* 과제용 임시 에러 처리가 아닌
+* 임시 에러 처리가 아닌
 * 실제 서비스 확장 가능한 에러 아키텍처로 구현했습니다
 
 **핵심 원칙:**
@@ -2250,7 +2250,7 @@ Next.js App Router의 Error Boundary를 활용해
    * 대용량 데이터 대응 (Virtualization) 가능
 
 6. **실무 현실성 고려**
-   * 과제 환경과 실서비스 환경의 차이 명시
+   * 개발 환경과 실서비스 환경의 차이 명시
    * 전제 조건과 선택 기준 제시
    * 솔직한 한계점 인정
 

@@ -29,7 +29,7 @@
 ### 3. `isProduct(value: unknown): value is Product`
 - **용도**: Product 타입 검증 (모든 필드 타입 및 범위 검증)
 - **검증 항목**:
-  - `index`: number, 0~49 범위
+  - `index`: number, 0 이상의 정수
   - `name`: string, 비어있지 않음
   - `price`: number, 0 이상
   - `current`: number, 0 이상

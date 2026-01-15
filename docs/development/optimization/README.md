@@ -1,23 +1,18 @@
 # 최적화 문서
 
-프로젝트의 성능 및 UX 최적화 전략을 문서화한 것입니다.
+프로젝트의 성능 및 UX 최적화 전략을 문서화한 것입니다. 성능 개선을 위해 시도한 방법들과 고려 사항을 정리했습니다.
 
 ## 최적화 전략 목록
 
 ### 1. 렌더링 성능 최적화
 - **파일**: [rendering-performance.md](./rendering-performance.md)
-- **설명**: Streaming + Suspense 전략 및 컴포넌트 렌더링 최적화
+- **설명**: Streaming + Suspense 전략 및 컴포넌트 렌더링 최적화, 성능 분석 포함
 - **주요 내용**:
   - API 지연 상황에서 체감 렌더링 시간 최소화
-  - React.memo를 활용한 리렌더링 방지
-  - useMemo를 활용한 계산 최적화
-
-### 2. 성능 분석
-- **파일**: [performance-analysis.md](./performance-analysis.md)
-- **설명**: 렌더링 시간 분석 및 평가
-- **주요 내용**:
   - 서버 렌더링 시간 분석
   - 체감 렌더링 시간 평가
+  - React.memo를 활용한 리렌더링 방지
+  - useMemo를 활용한 계산 최적화
   - 최적화 전략 적용 상태
 
 ### 3. 이미지 최적화 전략
@@ -33,9 +28,9 @@
 ### 실제 vs 체감 시간
 
 **실제 서버 렌더 시간:**
-- API 지연: 1~5초 (의도적)
-- 서버 렌더: 3.6s ~ 4.9s
-- **이것은 문제가 아님** - 요구사항에 의한 정상 동작
+- API 지연: 네트워크 상황에 따라 변동
+- 서버 렌더: 실제 측정값 기준
+- **이것은 문제가 아님** - 네트워크 지연에 따른 정상 동작
 
 **체감 렌더링 시간:**
 - Skeleton 즉시 표시: 0.1초
@@ -56,22 +51,19 @@
    - Server Component에서 fetch
    - Client는 렌더 전용
 
-## 최적화 체크리스트
+## 최적화 시도 사항
 
-| 항목 | 상태 |
-|------|------|
-| API 지연 고려 | 구현됨 |
-| Skeleton 즉시 표시 | 구현됨 |
-| Streaming | 구현됨 |
-| Suspense boundary 명확 | 구현됨 |
-| 서버 fetch | 구현됨 |
-| UX 설명 가능 | 구현됨 |
-| React.memo 적용 | 구현됨 |
-| useMemo 최적화 | 구현됨 |
-| 불필요한 리렌더링 방지 | 구현됨 |
+프로젝트에서 다음과 같은 최적화 방법들을 시도했습니다:
+
+- API 지연 상황 고려: Streaming과 Suspense를 활용한 체감 렌더링 시간 개선
+- Skeleton 즉시 표시: 로딩 중에도 화면 구조 유지
+- Streaming: Next.js의 Streaming 기능 활용
+- Suspense boundary 명확화: 로딩 상태 관리
+- 서버 fetch: Server Component에서 데이터 fetching
+- React.memo 적용: 불필요한 리렌더링 방지 시도
+- useMemo 최적화: 계산 비용이 큰 작업 최적화 시도
 
 ## 빠른 링크
 
 - [렌더링 성능 최적화](./rendering-performance.md)
-- [성능 분석](./performance-analysis.md)
 - [이미지 최적화 전략](./image-optimization-strategy.md)

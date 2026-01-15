@@ -149,7 +149,7 @@ export { NotFoundError } from './NotFoundError'
 import { ApiError, ValidationError } from '@/lib/errors'
 
 export async function fetchProducts() {
-  const res = await fetch('https://api.zeri.pics')
+  const res = await fetch(API_ENDPOINT)
 
   if (!res.ok) {
     throw new ApiError('상품 데이터를 불러오지 못했습니다.', res.status)
@@ -323,7 +323,7 @@ export default function ProductsNotFound() {
 
 이 구조는:
 
-- 과제용 임시 에러 처리가 아닌
+- 임시 에러 처리가 아닌
 - 실제 서비스 확장 가능한 에러 아키텍처로 구현했습니다
 
 ## 히스토리
