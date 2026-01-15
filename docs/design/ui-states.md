@@ -443,9 +443,9 @@
 - ✅ 접근성 고려 (aria-label, disabled 상태)
 - ✅ 레이아웃 안정성 유지 (CLS 방지)
 
-### 구현 우선순위
+### 구현 단계
 
-1. **Loading State**: Skeleton UI (최우선)
+1. **Loading State**: Skeleton UI
 2. **Sold Out State**: 품절 처리 (UX 요구사항)
 3. **Group Buy States**: 진행률 표시 (핵심 기능)
 4. **Error State**: 에러 처리 (안정성)

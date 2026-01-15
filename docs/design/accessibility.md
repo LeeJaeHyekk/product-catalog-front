@@ -475,9 +475,9 @@ export function AccessibleProductCard({ product }: ProductCardProps) {
 
 ## 결론
 
-### 접근성 구현 우선순위
+### 접근성 구현 단계
 
-1. **색상 대비**: WCAG AA 기준 준수 (최우선)
+1. **색상 대비**: WCAG AA 기준 준수
 2. **텍스트 크기**: 최소 14px (본문), 16px (가격)
 3. **터치 영역**: 최소 44px × 44px
 4. **ARIA 라벨**: 상태 정보 명확히 제공

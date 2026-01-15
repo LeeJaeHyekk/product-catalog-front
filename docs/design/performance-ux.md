@@ -328,16 +328,16 @@ export function ProductCard({ product }: ProductCardProps) {
   
   return (
     <article>
-      {/* 1순위: 가격 (가장 중요) */}
+      {/* 가격 (가장 중요) */}
       <p className="text-lg font-semibold">{formatPrice(price)}</p>
       
-      {/* 2순위: 진행률 */}
+      {/* 진행률 */}
       {!isSoldOut && <ProgressBar current={current} limit={limit} />}
       
-      {/* 3순위: 상품명 */}
+      {/* 상품명 */}
       <h3 className="text-sm">{name}</h3>
       
-      {/* 4순위: 이미지 (Lazy Load) */}
+      {/* 이미지 (Lazy Load) */}
       <img src={image} alt={name} loading="lazy" />
     </article>
   )
@@ -533,7 +533,7 @@ getLCP(sendToAnalytics)
 - [ ] 가상화 고려 (수천 개 이상 시)
 - [ ] 캐싱 전략 수립
 
-### 구현 우선순위
+### 구현 단계
 
 1. **초기 로드 제한**: 가장 큰 성능 개선
 2. **Lazy Loading**: 이미지 로딩 최적화
