@@ -4,7 +4,7 @@
  * React 컴포넌트에서 자주 사용되는 패턴을 유틸리티로 제공
  */
 
-import type { ReactNode } from 'react'
+// ReactNode는 현재 사용되지 않음
 
 /**
  * className을 안전하게 병합하는 함수

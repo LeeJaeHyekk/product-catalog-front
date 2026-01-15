@@ -33,7 +33,7 @@ export interface FilterOptions {
   /** 재고 있는 상품만 */
   onlyAvailable?: boolean
   /** 정렬 기준 */
-  sortBy?: 'price' | 'name' | 'progress' | 'index'
+  sortBy?: 'price' | 'name' | 'progress' | 'index' | 'relevance'
   /** 정렬 순서 */
   sortOrder?: 'asc' | 'desc'
 }
@@ -259,7 +259,7 @@ export function filterProducts(
           const aCurrent = typeof a.current === 'number' && isFinite(a.current) ? a.current : 0
           const aLimit = typeof a.limit === 'number' && isFinite(a.limit) && a.limit > 0 ? a.limit : 1
           const bCurrent = typeof b.current === 'number' && isFinite(b.current) ? b.current : 0
-          const bLimit = typeof b.limit === 'number' && isFinite(b.limit) && bLimit > 0 ? b.limit : 1
+          const bLimit = typeof b.limit === 'number' && isFinite(b.limit) && b.limit > 0 ? b.limit : 1
           const aProgress = (aCurrent / aLimit) * 100
           const bProgress = (bCurrent / bLimit) * 100
           comparison = aProgress - bProgress

@@ -208,7 +208,11 @@ export function multiKeywordSearch(
   }
 
   if (keywords.length === 1) {
-    const relevance = calculateRelevance(normalizedText, keywords[0])
+    const keyword = keywords[0]
+    if (!keyword) {
+      return { matched: false, score: 0 }
+    }
+    const relevance = calculateRelevance(normalizedText, keyword)
     return {
       matched: relevance.score > 0,
       score: relevance.score,
@@ -246,15 +250,15 @@ export function multiKeywordSearch(
  * 
  * 관련도 점수에 따라 정렬합니다.
  * 
- * @param a 첫 번째 상품
- * @param b 두 번째 상품
+ * @param _a 첫 번째 상품 (현재 사용되지 않음)
+ * @param _b 두 번째 상품 (현재 사용되지 않음)
  * @param aScore 첫 번째 상품의 관련도 점수
  * @param bScore 두 번째 상품의 관련도 점수
  * @returns 정렬 순서 (-1, 0, 1)
  */
 export function sortByRelevance<T>(
-  a: T,
-  b: T,
+  _a: T,
+  _b: T,
   aScore: number,
   bScore: number
 ): number {
@@ -263,6 +267,6 @@ export function sortByRelevance<T>(
     return bScore - aScore
   }
   
-  // 점수가 같으면 알파벳 순서로 정렬
+  // 점수가 같으면 동일 순위로 처리
   return 0
 }
