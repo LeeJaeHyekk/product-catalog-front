@@ -9,9 +9,13 @@
 - [타입 가드](./features/type-guards.md)
 - [안정성 향상](./features/stability-improvements.md)
 - [이미지 매칭](./features/image-matching.md)
+- [컴포넌트 모듈화](./features/README.md#5-컴포넌트-모듈화)
+- [컬러 시스템 통합](./features/README.md#6-컬러-시스템-통합)
+- [렌더링 최적화](./features/README.md#7-렌더링-최적화)
+- [카테고리 분류 및 검색/필터](./features/category-filter-search.md)
 
 ### Optimization (최적화)
-- [렌더링 성능 최적화](./optimization/rendering-performance.md)
+- [렌더링 성능 개선](./optimization/rendering-performance.md)
 - [이미지 최적화 전략](./optimization/image-optimization-strategy.md)
 
 ### Analysis (분석)

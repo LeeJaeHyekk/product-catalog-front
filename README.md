@@ -4,13 +4,13 @@ Next.js + TypeScript 기반의 상품 목록 UI 구현 프로젝트입니다.
 
 ## 주요 기능
 
-- ✅ 무작위 순서 데이터를 index 기준으로 정렬
-- ✅ 품절 상품 자동 분리 및 하단 배치
-- ✅ Skeleton UI 기반 로딩 경험 최적화
-- ✅ 반응형 디자인 (Mobile/Tablet/PC)
-- ✅ TanStack Query 기반 서버 상태 관리
-- ✅ ESM 모듈 시스템 및 함수형 설계
-- ✅ 타입 기반 에러 처리 및 Error Boundary
+- 무작위 순서 데이터를 index 기준으로 정렬
+- 품절 상품 자동 분리 및 하단 배치
+- Skeleton UI 기반 로딩 경험 개선
+- 반응형 디자인 (Mobile/Tablet/PC)
+- TanStack Query 기반 서버 상태 관리
+- ESM 모듈 시스템 및 함수형 설계
+- 타입 기반 에러 처리 및 Error Boundary
 
 ## 기술 스택
 
@@ -104,15 +104,15 @@ npm start
 - Stable Sort 보장으로 index 순서 유지
 - 순수 함수로 설계되어 메모이제이션 가능
 
-### 성능 최적화
+### 성능 개선
 
 - Virtualization 지원 (대용량 데이터 대응)
 - 메모이제이션을 통한 불필요한 재계산 방지
 - Skeleton UI로 체감 성능 개선
 
-### UX 최적화
+### UX 개선
 
-- **Streaming + Suspense 전략**: API 응답 지연 상황을 고려하여 Next.js의 Streaming과 Suspense를 활용해 사용자 체감 렌더링 시간을 최소화
+- **Streaming + Suspense 전략**: API 응답 지연 상황을 고려하여 Next.js의 Streaming과 Suspense를 활용해 사용자 체감 렌더링 시간을 개선
 - Skeleton UI로 로딩 경험 개선
 - 레이아웃 시프트 방지 (CLS 개선)
 - 품절 상품 명확한 시각적 구분
@@ -129,7 +129,7 @@ npm start
 ### 렌더링 최적화 전략
 
 **핵심 원칙:**
-> 실제 서버 렌더 시간은 유지하면서, Streaming과 Suspense로 체감 렌더링 시간을 최소화
+> 실제 서버 렌더 시간은 유지하면서, Streaming과 Suspense로 체감 렌더링 시간을 개선
 
 **구현 방식:**
 - 페이지 레벨에서 즉시 Skeleton 표시
@@ -145,4 +145,4 @@ npm start
 - **엔드포인트**: `https://api.zeri.pics`
 - **응답 형식**: `Product[]` 배열
 
-자세한 설계 내용은 `design structure.md`를 참고하세요.
+자세한 설계 내용은 `docs/design/design-structure.md`를 참고하세요.

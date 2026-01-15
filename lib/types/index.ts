@@ -4,6 +4,13 @@
 
 export type { Product, ProcessedProduct } from './product'
 export type { ApiResponse, ApiResponseItem } from './api'
+export type {
+  CategoryRoot,
+  Category,
+  SubCategory,
+  FlatCategoryInfo,
+  CategoryMatch,
+} from './category'
 
 // 기존 파일과의 호환성을 위한 re-export
 export type { Product as ProductType, ProcessedProduct as ProcessedProductType } from './product'

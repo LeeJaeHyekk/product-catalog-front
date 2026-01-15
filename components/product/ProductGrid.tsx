@@ -1,21 +1,26 @@
 'use client'
 
-import type { ProcessedProduct } from '@/lib'
+import { useMemo } from 'react'
+import type { EnrichedProduct } from '@/lib/product'
 import { createProductKey, STYLES } from '@/lib'
 import { EmptyState } from '@/components/ui'
 import { ProductCard } from './ProductCard'
 
 interface ProductGridProps {
-  products: ProcessedProduct[]
+  products: EnrichedProduct[]
 }
 
 export function ProductGrid({ products }: ProductGridProps) {
+  // filter 연산 메모이제이션
+  const { available, soldOut } = useMemo(() => {
+    const available = products.filter(p => !p.isSoldOut)
+    const soldOut = products.filter(p => p.isSoldOut)
+    return { available, soldOut }
+  }, [products])
+
   if (products.length === 0) {
     return <EmptyState message="표시할 상품이 없습니다." />
   }
-  
-  const available = products.filter(p => !p.isSoldOut)
-  const soldOut = products.filter(p => p.isSoldOut)
   
   if (available.length === 0 && soldOut.length > 0) {
     return (
@@ -26,14 +31,26 @@ export function ProductGrid({ products }: ProductGridProps) {
     )
   }
   
+  // 첫 카드 여부 계산 메모이제이션
+  const firstCardClassName = useMemo(
+    () => 'transform transition-all duration-300 hover:scale-[1.02]',
+    []
+  )
+
   return (
     <div className={STYLES.grid}>
-      {products.map((product, idx) => (
-        <ProductCard 
-          key={createProductKey(product, idx)} 
-          product={product} 
-        />
-      ))}
+      {products.map((product, idx) => {
+        const isFirstCard = idx === 0
+        
+        return (
+          <div
+            key={createProductKey(product, idx)}
+            className={isFirstCard ? firstCardClassName : ''}
+          >
+            <ProductCard product={product} />
+          </div>
+        )
+      })}
     </div>
   )
 }

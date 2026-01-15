@@ -4,10 +4,17 @@
 
 ## 최적화 전략 목록
 
-### 1. Streaming + Suspense 전략
-- **파일**: `streaming-suspense-strategy.md`
-- **설명**: API 지연 상황에서 체감 렌더링 시간 최소화
-- **구현 상태**: ✅ 완료
+### 1. 렌더링 성능 최적화
+- **파일**: `rendering-performance.md`
+- **설명**: Streaming + Suspense 전략 및 컴포넌트 렌더링 최적화
+- **주요 내용**:
+  - API 지연 상황에서 체감 렌더링 시간 최소화
+  - React.memo를 활용한 리렌더링 방지
+  - useMemo를 활용한 계산 최적화
+
+### 2. 이미지 최적화 전략
+- **파일**: `image-optimization-strategy.md`
+- **설명**: Next.js Image 최적화 전략
 
 ## 핵심 원칙
 
@@ -41,9 +48,12 @@
 
 | 항목 | 상태 |
 |------|------|
-| API 지연 고려 | ✅ |
-| Skeleton 즉시 표시 | ✅ |
-| Streaming | ✅ |
-| Suspense boundary 명확 | ✅ |
-| 서버 fetch | ✅ |
-| UX 설명 가능 | ✅ |
+| API 지연 고려 | 구현됨 |
+| Skeleton 즉시 표시 | 구현됨 |
+| Streaming | 구현됨 |
+| Suspense boundary 명확 | 구현됨 |
+| 서버 fetch | 구현됨 |
+| UX 설명 가능 | 구현됨 |
+| React.memo 적용 | 구현됨 |
+| useMemo 최적화 | 구현됨 |
+| 불필요한 리렌더링 방지 | 구현됨 |

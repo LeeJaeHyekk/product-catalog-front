@@ -43,6 +43,8 @@ lib/
 │   ├── product.ts         # 상품 관련 상수
 │   ├── cache.ts           # 캐시 관련 상수
 │   ├── ui.ts              # UI 관련 상수
+│   ├── image.ts           # 이미지 관련 상수
+│   ├── colors.ts          # 컬러 상수 (design-tokens 기반)
 │   └── index.ts           # 상수 통합 export
 │
 ├── types/                  # 타입 정의
@@ -152,8 +154,39 @@ const soldOut = sortProducts(mapped.filter(p => p.isSoldOut))
 
 - `lib/utils/string.ts`: 문자열 유틸리티
 - `lib/utils/number.ts`: 숫자 유틸리티
-- `lib/utils/product.ts`: 상품 관련 유틸리티
+- `lib/utils/product.ts`: 상품 관련 유틸리티 (진행률 계산, 상태 계산)
 - `lib/utils/index.ts`: 통합 export
+
+### 6. 컬러 상수 모듈화
+
+**Before:**
+- 하드코딩된 컬러 값 (`#1E7F4F`, `#2E9F6B` 등)이 여러 파일에 분산
+- 컬러 변경 시 여러 파일 수정 필요
+
+**After:**
+- `lib/constants/colors.ts`: design-tokens 기반 컬러 상수 통합
+- Tailwind CSS 클래스 헬퍼 함수 제공
+- 모든 컴포넌트에서 일관된 컬러 사용
+
+### 7. 컴포넌트 모듈화
+
+#### 레이아웃 컴포넌트 (`components/layout/`)
+- `BackgroundImage`: 배경 이미지 및 오버레이 통합 관리
+- `PageHeader`: 일관된 페이지 헤더 구조
+- `Container`: 컨테이너 레이아웃
+
+#### 상품 컴포넌트 (`components/product/`)
+- `ProductCard`: 메모이제이션된 상품 카드
+- `ProductBadge`: 상품 상태 배지 (인기, 마감임박, 목표달성)
+- `ProductStatusIndicator`: 카드 하단 컬러 바 인디케이터
+- `ProductGrid`: 상품 그리드 레이아웃
+- `ProductImage`: 최적화된 이미지 컴포넌트
+
+#### UI 컴포넌트 (`components/ui/`)
+- `Button`: 일관된 버튼 스타일 (primary, secondary, outline)
+- `TrustCard`: 신뢰 요소 카드
+- `EmptyState`: 빈 상태 표시
+- `ErrorState`: 에러 상태 표시
 
 ## 모듈화 원칙
 
@@ -216,16 +249,16 @@ import { isValidProduct } from '@/lib/product/validate'
 
 **변경 불필요:**
 ```typescript
-import { formatPrice, STYLES } from '@/lib' // ✅ 그대로 작동
+import { formatPrice, STYLES } from '@/lib' // 그대로 작동
 ```
 
 **변경 필요:**
 ```typescript
 // Before
-import { fetchProducts } from '@/lib/api' // ❌ 이제는 직접 import
+import { fetchProducts } from '@/lib/api' // 직접 import 필요
 
 // After
-import { fetchProducts } from '@/lib/api' // ✅ 서버 전용 직접 import
+import { fetchProducts } from '@/lib/api' // 서버 전용 직접 import
 ```
 
 ## 히스토리
@@ -240,3 +273,29 @@ import { fetchProducts } from '@/lib/api' // ✅ 서버 전용 직접 import
 - 정렬, 검증, 정규화 로직 통합
 - 타입 및 상수 정의 통합
 - 모듈별 책임 명확화
+
+### 2026-01-XX: 컴포넌트 및 상수 모듈화
+- 컬러 상수 모듈 생성 (`lib/constants/colors.ts`)
+- 배경 이미지 컴포넌트 모듈화 (`components/layout/BackgroundImage.tsx`)
+- 페이지 헤더 컴포넌트 생성 (`components/layout/PageHeader.tsx`)
+- 배지 컴포넌트 분리 (`ProductBadge`, `ProductStatusIndicator`)
+- 버튼 컴포넌트 모듈화 (`components/ui/Button.tsx`)
+- 신뢰 요소 카드 컴포넌트 생성 (`components/ui/TrustCard.tsx`)
+- 상품 상태 계산 로직 유틸리티화 (`lib/utils/product.ts`)
+- 하드코딩된 컬러 값 제거 및 일관된 컬러 시스템 구축
+
+### 2026-01-XX: SearchBar 및 레이아웃 모듈화
+- UI 상수 통합 (`lib/constants/ui.ts`) - LAYOUT_GAPS, SEARCH_BAR 상수 추가
+- 레이아웃 계산 유틸리티 생성 (`lib/utils/layout.ts`)
+  - `getElementWidth()`: 요소 너비 안전 측정
+  - `calculateSearchBarLayout()`: 검색 바 레이아웃 계산 로직
+- 요소 크기 측정 훅 생성 (`lib/hooks/useElementSize.ts`)
+  - `useElementSize()`: 요소의 width/height 측정
+  - `useElementWidth()`: 요소의 width만 측정 (최적화)
+- 동적 레이아웃 계산 훅 생성 (`lib/hooks/useDynamicLayout.ts`)
+  - `useSearchBarLayout()`: 검색 바 동적 레이아웃 계산
+  - ResizeObserver + requestAnimationFrame 패턴 재사용
+- SearchBar 컴포넌트 리팩토링
+  - 100줄 이상의 복잡한 레이아웃 계산 로직 제거
+  - 모듈화된 훅 사용으로 코드 간소화
+  - 재사용성 및 유지보수성 향상

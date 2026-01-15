@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { STYLES, isOptimizableImage, getImageSrc, IMAGE_QUALITY, IMAGE_SIZES } from '@/lib'
 
 interface ProductImageProps {
@@ -36,6 +36,12 @@ export function ProductImage({
   
   const imageSrc = getImageSrc(src)
   const canOptimize = imageSrc && isOptimizableImage(imageSrc)
+
+  // src가 변경되면 state 리셋
+  useEffect(() => {
+    setImageError(false)
+    setImageLoading(true)
+  }, [src])
   
   // 이미지가 없거나 에러 발생 시 placeholder 표시
   if (!imageSrc || imageError) {

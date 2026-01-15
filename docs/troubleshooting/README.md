@@ -7,12 +7,10 @@
 ### 1. Hydration Error
 - **파일**: `hydration-error.md`
 - **발생 시점**: 서버 렌더링과 클라이언트 하이드레이션 불일치
-- **해결 상태**: ✅ 해결됨
 
 ### 2. 에러 설계 아키텍처
 - **파일**: `error-architecture.md`
 - **내용**: 타입 기반 에러 처리 및 Error Boundary 구조
-- **상태**: ✅ 구현 완료
 
 ## 오류 추가 방법
 

@@ -257,7 +257,7 @@ export function LoadMoreProductGrid({ products }: ProductGridProps) {
 #### 구현 예시
 
 ```tsx
-// ✅ 좋은 예: 고정 높이 Skeleton
+// 고정 높이 Skeleton 예시
 export function ProductSkeleton() {
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden">
@@ -291,7 +291,7 @@ export function BadProductSkeleton() {
 ### 이미지 로딩 전략
 
 ```tsx
-// ✅ 좋은 예: Lazy Loading + Placeholder
+// Lazy Loading + Placeholder 예시
 <img
   src={image}
   alt={name}
@@ -349,7 +349,7 @@ export function ProductCard({ product }: ProductCardProps) {
 ```tsx
 import { memo } from 'react'
 
-// ✅ 좋은 예: 메모이제이션으로 불필요한 리렌더링 방지
+// 메모이제이션으로 불필요한 리렌더링 방지 예시
 export const ProductCard = memo(function ProductCard({ product }: ProductCardProps) {
   // ...
 }, (prevProps, nextProps) => {
@@ -378,7 +378,7 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
   loading="lazy"
 />
 
-// ✅ 좋은 예: WebP 포맷 사용
+// WebP 포맷 사용 예시
 <picture>
   <source srcSet={`${image}.webp`} type="image/webp" />
   <img src={image} alt={name} loading="lazy" />
@@ -467,7 +467,7 @@ export function VirtualizedProductGrid({ products }: ProductGridProps) {
 ### TanStack Query 캐싱
 
 ```tsx
-// ✅ 좋은 예: 적절한 캐싱 설정
+// 적절한 캐싱 설정 예시
 export function useProducts() {
   return useSuspenseQuery({
     queryKey: ['products'],
@@ -505,7 +505,7 @@ export function useProductsPage(page: number) {
 ### 측정 도구
 
 ```tsx
-// ✅ 좋은 예: 성능 측정
+// 성능 측정 예시
 import { getCLS, getFID, getLCP } from 'web-vitals'
 
 function sendToAnalytics(metric: Metric) {

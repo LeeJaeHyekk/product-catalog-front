@@ -9,26 +9,41 @@
 - **내용**: 브랜드 핵심 이미지, 디자인 방향, 컬러 시스템, 타이포그래피, 레이아웃 구조 등
 - **용도**: 전체 디자인 시스템의 기반이 되는 문서
 
-### 2. 디자인 토큰
+### 2. 상품 목록 UI 설계서
+- **파일**: `design-structure.md`
+- **내용**: 상품 목록 UI 설계 원칙, 데이터 처리, 컴포넌트 구조 등
+- **용도**: 프로젝트 전체 설계 원칙 및 구현 가이드
+
+### 3. 디자인 토큰
 - **파일**: `design-tokens.ts`
 - **내용**: 컬러, 타이포그래피, 간격, 그림자, 전환 등 디자인 토큰 정의
 - **용도**: 코드에서 직접 사용할 수 있는 디자인 토큰
-- **원칙**: 모든 UI 값은 토큰에서 파생, 임의 px 사용 금지
+- **원칙**: 모든 UI 값은 토큰에서 파생, 임의 px 사용 지양
 
-### 3. UI 상태 디자인 규칙
+### 4. UI 상태 디자인 규칙
 - **파일**: `ui-states.md`
 - **내용**: Loading, Sold Out, Group Buy, Error, Empty 상태별 디자인 규칙
 - **용도**: 상황별 UI 대응 전략
 
-### 4. 접근성 원칙
+### 5. 접근성 원칙
 - **파일**: `accessibility.md`
 - **내용**: 색상 대비, 텍스트 크기, 인터랙션, 스크린 리더 지원, 키보드 네비게이션
 - **용도**: WCAG AA 기준 준수, 모든 사용자 접근성 보장
 
-### 5. 대용량 상품 UX 전략
+### 6. 대용량 상품 UX 전략
 - **파일**: `performance-ux.md`
-- **내용**: 초기 로드 전략, 스크롤 전략, 리스트 안정성, 성능 최적화, 가상화
-- **용도**: 확장 가능한 UX 설계, 성능 최적화 전략
+- **내용**: 초기 로드 전략, 스크롤 전략, 리스트 안정성, 성능 개선, 가상화
+- **용도**: 확장 가능한 UX 설계, 성능 개선 전략
+
+### 7. 배경 디자인 옵션
+- **파일**: `background-design-options.md`
+- **내용**: 배경 이미지 및 그라데이션 옵션 비교
+- **용도**: 배경 디자인 선택 가이드
+
+### 8. GIF 배경 프롬프트
+- **파일**: `gif-background-prompt.md`
+- **내용**: AI 이미지 생성 프롬프트 가이드
+- **용도**: 배경 이미지 생성 시 참고
 
 ## 디자인 철학
 
@@ -106,17 +121,22 @@ const headingStyle = {
 ```
 design/
  ├─ README.md (현재 문서)
- ├─ brand-identity.md        # 브랜드 정체성 및 디자인 전략
- ├─ design-tokens.ts         # 디자인 토큰 정의
- ├─ ui-states.md             # UI 상태 디자인 규칙
- ├─ accessibility.md         # 접근성 원칙
- └─ performance-ux.md       # 대용량 상품 UX 전략
+ ├─ brand-identity.md              # 브랜드 정체성 및 디자인 전략
+ ├─ design-structure.md            # 상품 목록 UI 설계서
+ ├─ design-tokens.ts               # 디자인 토큰 정의
+ ├─ ui-states.md                   # UI 상태 디자인 규칙
+ ├─ accessibility.md                # 접근성 원칙
+ ├─ performance-ux.md              # 대용량 상품 UX 전략
+ ├─ background-design-options.md  # 배경 디자인 옵션
+ └─ gif-background-prompt.md       # GIF 배경 프롬프트
 ```
 
 ## 빠른 링크
 
 - [브랜드 정체성 문서](./brand-identity.md)
+- [상품 목록 UI 설계서](./design-structure.md)
 - [디자인 토큰 정의](./design-tokens.ts)
 - [UI 상태 규칙](./ui-states.md)
 - [접근성 가이드](./accessibility.md)
 - [성능 UX 전략](./performance-ux.md)
+- [배경 디자인 옵션](./background-design-options.md)

@@ -7,20 +7,23 @@ docs/
 ├── README.md                    # 메인 문서 인덱스
 ├── STRUCTURE.md                 # 이 파일 (구조 가이드)
 │
-├── architecture/                # 📐 아키텍처
+├── architecture/                # 아키텍처
 │   ├── README.md
-│   ├── modularization.md        # 모듈화 가이드 (통합됨)
+│   ├── modularization.md        # 모듈화 가이드
 │   └── module-structure.md      # 모듈 구조 가이드
 │
-├── design/                      # 🎨 디자인
+├── design/                      # 디자인
 │   ├── README.md
 │   ├── brand-identity.md        # 브랜드 정체성
 │   ├── design-tokens.ts         # 디자인 토큰
+│   ├── design-structure.md      # 상품 목록 UI 설계서
 │   ├── ui-states.md             # UI 상태 디자인 규칙
-│   ├── accessibility.md         # 접근성 원칙
-│   └── performance-ux.md        # 대용량 UX 전략
+│   ├── accessibility.md          # 접근성 원칙
+│   ├── performance-ux.md        # 대용량 UX 전략
+│   ├── background-design-options.md  # 배경 디자인 옵션
+│   └── gif-background-prompt.md      # GIF 배경 프롬프트
 │
-├── development/                 # 🚀 개발
+├── development/                 # 개발
 │   ├── README.md
 │   │
 │   ├── features/                # 기능
@@ -28,35 +31,41 @@ docs/
 │   │   ├── loading-spinner.md
 │   │   ├── type-guards.md
 │   │   ├── stability-improvements.md
-│   │   └── image-matching.md
+│   │   ├── image-matching.md
+│   │   ├── category-filter-search.md
+│   │   ├── category-implementation-guide.md
+│   │   ├── data-processing-architecture.md
+│   │   ├── search-bar-modularization.md
+│   │   ├── search-filter-improvements.md
+│   │   └── test-images.md
 │   │
 │   ├── optimization/            # 최적화
 │   │   ├── README.md
-│   │   ├── rendering-performance.md    # 렌더링 성능 (통합됨)
+│   │   ├── rendering-performance.md
 │   │   └── image-optimization-strategy.md
 │   │
 │   └── analysis/                # 분석
 │       ├── README.md
 │       └── esm-functional-analysis.md
 │
-└── troubleshooting/             # 🔧 문제 해결
+└── troubleshooting/             # 문제 해결
     ├── README.md
-    ├── hydration-error.md       # Hydration 에러 (통합됨)
-    └── error-architecture.md    # 에러 아키텍처
+    ├── hydration-error.md
+    └── error-architecture.md
 ```
 
 ## 대분류 설명
 
-### 📐 Architecture (아키텍처)
+### Architecture (아키텍처)
 프로젝트의 구조, 모듈화, 설계 원칙
 
-### 🎨 Design (디자인)
+### Design (디자인)
 디자인 시스템, 브랜드 정체성, UI/UX 가이드
 
-### 🚀 Development (개발)
+### Development (개발)
 기능 구현, 최적화, 코드 분석
 
-### 🔧 Troubleshooting (문제 해결)
+### Troubleshooting (문제 해결)
 에러 해결, 문제 진단, 개발 히스토리
 
 ## 소분류 설명
@@ -96,11 +105,11 @@ docs/
 
 에러 해결 및 주요 개발 결정 문서에는 히스토리 섹션이 포함됩니다:
 
-- `troubleshooting/hydration-error.md` ✅
-- `troubleshooting/error-architecture.md` ✅
-- `development/analysis/esm-functional-analysis.md` ✅
-- `architecture/modularization.md` ✅
-- `development/optimization/rendering-performance.md` ✅
+- `troubleshooting/hydration-error.md`
+- `troubleshooting/error-architecture.md`
+- `development/analysis/esm-functional-analysis.md`
+- `architecture/modularization.md`
+- `development/optimization/rendering-performance.md`
 
 ## 문서 작성 가이드
 

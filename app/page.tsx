@@ -1,27 +1,15 @@
-import Link from 'next/link'
-import { Container } from '@/components/layout'
+import { Container, BackgroundImage } from '@/components/layout'
+import { Button, TrustCard } from '@/components/ui'
 
 export default function Home() {
   return (
-    <div className="relative min-h-screen">
-      {/* 배경 이미지 */}
-      <div
-        className="fixed inset-0 z-0"
-        style={{
-          backgroundImage: 'url(/HeroImage.png)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-        }}
-      >
-        {/* 그라데이션 오버레이 - 텍스트 가독성 확보 */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
-        {/* 브랜드 컬러 오버레이 - 신선함 강조 */}
-        <div className="absolute inset-0 bg-[#1E7F4F]/10" />
-      </div>
-
-      {/* 컨텐츠 영역 */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center">
+    <BackgroundImage
+      imagePath="/HeroImage.png"
+      overlayType="dark"
+      brandOverlayOpacity={10}
+      fixed={false}
+    >
+      <div className="min-h-screen flex items-center justify-center">
         <Container>
           <div className="text-center px-4 py-16">
             {/* 메인 타이틀 */}
@@ -41,38 +29,23 @@ export default function Home() {
 
             {/* CTA 버튼 그룹 */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link
-                href="/products"
-                className="bg-[#1E7F4F] hover:bg-[#2E9F6B] text-white font-semibold px-8 py-4 rounded-lg text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
-              >
+              <Button href="/products" asLink variant="primary" size="lg">
                 공동구매 상품 보기
-              </Link>
-              <Link
-                href="/products"
-                className="bg-white/90 hover:bg-white text-[#1E7F4F] font-semibold px-8 py-4 rounded-lg text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
-              >
+              </Button>
+              <Button href="/products" asLink variant="secondary" size="lg">
                 오늘의 특가
-              </Link>
+              </Button>
             </div>
 
             {/* 신뢰 요소 */}
             <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
-                <div className="text-3xl font-bold text-white mb-2">100%</div>
-                <div className="text-white/90 text-sm">실제 매장 물량</div>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
-                <div className="text-3xl font-bold text-white mb-2">당일</div>
-                <div className="text-white/90 text-sm">근거리 공급</div>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
-                <div className="text-3xl font-bold text-white mb-2">신선</div>
-                <div className="text-white/90 text-sm">농산물 보장</div>
-              </div>
+              <TrustCard title="100%" description="실제 매장 물량" />
+              <TrustCard title="당일" description="근거리 공급" />
+              <TrustCard title="신선" description="농산물 보장" />
             </div>
           </div>
         </Container>
       </div>
-    </div>
+    </BackgroundImage>
   )
 }

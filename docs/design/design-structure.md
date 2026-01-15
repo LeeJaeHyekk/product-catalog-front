@@ -81,7 +81,7 @@ https://api.zeri.pics
 **구현 예시:**
 
 ```ts
-// ✅ 권장: ESM + 함수형
+// ESM + 함수형 방식
 // lib/product.ts
 export function processProducts(products: Product[]): ProcessedProduct[] {
   // 순수 함수로 구현
@@ -106,7 +106,7 @@ export function useProducts() {
   })
 }
 
-// ❌ 지양: CommonJS
+// CommonJS 방식은 사용하지 않음
 // const { processProducts } = require('./product')
 // module.exports = { useProducts }
 ```
@@ -147,11 +147,11 @@ export function useProducts() {
 
 **장점:**
 
-* ✅ 모던 JavaScript 표준 준수
-* ✅ 트리 쉐이킹 최적화 용이
-* ✅ 정적 분석 및 타입 체크 용이
-* ✅ 함수형 프로그래밍으로 테스트 용이
-* ✅ 부수 효과 최소화로 버그 감소
+* 모던 JavaScript 표준 준수
+* 트리 쉐이킹 최적화 용이
+* 정적 분석 및 타입 체크 용이
+* 함수형 프로그래밍으로 테스트 용이
+* 부수 효과 최소화로 버그 감소
 
 ---
 
@@ -2196,21 +2196,18 @@ export default function ProductsNotFound() {
 
 | 항목 | 설명 | 구현 여부 |
 |------|------|----------|
-| **타입 분리** | Error를 문자열로 안 씀 | ✅ |
-| **책임 분리** | 발생 / 표현 분리 | ✅ |
-| **Error Boundary** | 페이지 단위 | ✅ |
-| **UX** | 재시도 / 안내 메시지 | ✅ |
-| **확장성** | 에러 타입 추가 쉬움 | ✅ |
-
-**👉 이 중 3개 이상 충족하면 고급 설계**
+| **타입 분리** | Error를 문자열로 안 씀 | 구현됨 |
+| **책임 분리** | 발생 / 표현 분리 | 구현됨 |
+| **Error Boundary** | 페이지 단위 | 구현됨 |
+| **UX** | 재시도 / 안내 메시지 | 구현됨 |
+| **확장성** | 에러 타입 추가 쉬움 | 구현됨 |
 
 ### 16.7 에러 설계의 정체성
 
 이 구조는:
 
-* ❌ 과제용 임시 에러 처리 아님
-* ❌ try-catch 남발 아님
-* ✅ 실제 서비스 확장 가능한 에러 아키텍처
+* 과제용 임시 에러 처리가 아닌
+* 실제 서비스 확장 가능한 에러 아키텍처로 구현했습니다
 
 **핵심 원칙:**
 

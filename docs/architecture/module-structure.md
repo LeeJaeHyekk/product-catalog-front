@@ -39,6 +39,8 @@ lib/
 │   ├── product.ts         # 상품 설정
 │   ├── cache.ts           # 캐시 설정
 │   ├── ui.ts              # UI 설정
+│   ├── image.ts           # 이미지 설정
+│   ├── colors.ts          # 컬러 상수 (design-tokens 기반)
 │   └── index.ts           # 통합 export
 │
 ├── types/                  # 타입 정의
@@ -100,6 +102,8 @@ lib/
   - `clamp()`: 범위 제한
   - `safeTrim()`: 안전한 문자열 trim
   - `createProductKey()`: 상품 key 생성
+  - `calculateProgressPercentage()`: 진행률 계산 (0~100%)
+  - `calculateProductStatus()`: 상품 상태 계산 (complete, urgent, popular, default)
 
 ### 상수 모듈 (`lib/constants/`)
 - **책임**: 애플리케이션 상수 정의
@@ -109,6 +113,8 @@ lib/
   - 상품 설정 (인덱스 범위)
   - 캐시 설정 (staleTime, gcTime)
   - UI 설정 (Skeleton 개수, Grid 컬럼)
+  - 이미지 설정 (quality, sizes)
+  - 컬러 상수 (design-tokens 기반, Tailwind CSS 클래스 헬퍼)
 
 ### 타입 모듈 (`lib/types/`)
 - **책임**: 타입 정의
@@ -156,6 +162,39 @@ import { normalizeProduct } from '@/lib/product/normalize'
 - 정규화: `lib/product/normalize.ts` - 전용 모듈
 - 파생 상태: `lib/product/derive.ts` - 전용 모듈
 
+## 컴포넌트 구조
+
+### 레이아웃 컴포넌트 (`components/layout/`)
+- **BackgroundImage**: 배경 이미지 및 오버레이 통합 관리
+  - 오버레이 타입 (dark/light) 설정
+  - 브랜드 컬러 오버레이 투명도 조절
+  - 배경 고정 여부 설정
+- **PageHeader**: 일관된 페이지 헤더 구조
+  - 제목, 설명, 브랜드 라인 표시 옵션
+  - 텍스트 컬러 타입 (dark/light) 설정
+- **Container**: 컨테이너 레이아웃
+
+### 상품 컴포넌트 (`components/product/`)
+- **ProductCard**: 메모이제이션된 상품 카드
+  - React.memo로 불필요한 리렌더링 방지
+  - useMemo로 계산 로직 최적화
+- **ProductBadge**: 상품 상태 배지
+  - 인기, 마감임박, 목표달성 상태 표시
+- **ProductStatusIndicator**: 카드 하단 컬러 바
+  - 상태별 컬러 표시 (complete, urgent, popular, default)
+- **ProductGrid**: 상품 그리드 레이아웃
+  - useMemo로 filter 연산 최적화
+- **ProductImage**: 최적화된 이미지 컴포넌트
+
+### UI 컴포넌트 (`components/ui/`)
+- **Button**: 일관된 버튼 스타일
+  - variant: primary, secondary, outline
+  - size: sm, md, lg
+  - Link 컴포넌트로도 사용 가능
+- **TrustCard**: 신뢰 요소 카드
+- **EmptyState**: 빈 상태 표시
+- **ErrorState**: 에러 상태 표시
+
 ## 확장 가이드
 
 ### 새로운 기능 추가 시
@@ -179,6 +218,14 @@ import { normalizeProduct } from '@/lib/product/normalize'
    ```
    lib/constants/
    └── order.ts  # 주문 관련 상수
+   ```
+
+4. **새로운 컴포넌트 추가**
+   ```
+   components/
+   └── [domain]/
+       ├── [Component].tsx
+       └── index.ts
    ```
 
 ## 테스트 전략

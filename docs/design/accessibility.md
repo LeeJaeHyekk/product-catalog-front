@@ -40,22 +40,22 @@
 
 | 조합 | 대비율 | WCAG 등급 | 상태 |
 |------|--------|-----------|------|
-| Primary Green (`#1E7F4F`) on White | 4.8:1 | AA | ✅ |
-| Dark Gray (`#1F2933`) on White | 16.8:1 | AAA | ✅ |
-| Accent Yellow (`#F2C94C`) on White | 1.9:1 | ❌ | ⚠️ |
-| Accent Yellow on Dark Green | 4.2:1 | AA | ✅ |
+| Primary Green (`#1E7F4F`) on White | 4.8:1 | AA | 준수 |
+| Dark Gray (`#1F2933`) on White | 16.8:1 | AAA | 준수 |
+| Accent Yellow (`#F2C94C`) on White | 1.9:1 | 미준수 | 주의 필요 |
+| Accent Yellow on Dark Green | 4.2:1 | AA | 준수 |
 
 ### 구현 가이드
 
 ```tsx
-// ✅ 좋은 예: 충분한 대비
+// 충분한 대비 예시
 <p className="text-gray-900">일반 텍스트</p>
 <p className="text-[#1E7F4F]">Primary Green 텍스트</p>
 
-// ❌ 나쁜 예: 대비 부족
+// 대비 부족 예시 (피해야 함)
 <p className="text-yellow-400">노란색 텍스트 (대비 부족)</p>
 
-// ✅ 개선: 배경색 추가
+// 개선 예시: 배경색 추가
 <p className="bg-yellow-100 text-yellow-900">노란색 텍스트 (개선)</p>
 ```
 

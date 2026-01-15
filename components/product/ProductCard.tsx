@@ -1,28 +1,54 @@
-import type { ProcessedProduct } from '@/lib'
-import { formatPrice } from '@/lib'
-import { STYLES } from '@/lib'
+import { memo } from 'react'
+import type { EnrichedProduct } from '@/lib/product'
+import { formatPrice, STYLES } from '@/lib'
+import { useProductState, useMemoClassName } from '@/lib/hooks'
+import { compareProductProps } from '@/lib/utils/react'
+import { COLORS } from '@/lib/constants'
 import { ProductImage } from './ProductImage'
+import { ProductBadge } from './ProductBadge'
+import { ProductStatusIndicator } from './ProductStatusIndicator'
+import { CategoryTag } from '@/components/ui'
 
 interface ProductCardProps {
-  product: ProcessedProduct
+  product: EnrichedProduct
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+function ProductCardComponent({ product }: ProductCardProps) {
   const { name, price, image, isSoldOut, current, limit } = product
   
-  // 진행률 계산 (0~100%)
-  const progressPercentage = Math.min((current / limit) * 100, 100)
-  const remaining = limit - current
-  
-  // 공동구매 상태 판단
-  const isComplete = current >= limit
-  const isUrgent = !isComplete && progressPercentage >= 75
+  // 상품 상태 계산 (커스텀 훅 사용)
+  const { progressPercentage, remaining, status, isComplete, isUrgent, isPopular } =
+    useProductState({ current, limit, isSoldOut })
+
+  // className 메모이제이션 (커스텀 훅 사용)
+  const cardClassName = useMemoClassName(
+    `${STYLES.productCard} relative`,
+    { [STYLES.productCardSoldOut]: isSoldOut }
+  )
+
+  const ariaLabel = `${name}, ${formatPrice(price)}, ${isSoldOut ? '품절' : '구매 가능'}`
+
+  const progressBarClassName = useMemoClassName(STYLES.progressFill, {
+    [COLORS.primary.bg]: status === 'complete',
+    [COLORS.accent.bg]: status === 'urgent',
+    'bg-gray-400': status !== 'complete' && status !== 'urgent',
+  })
+
+  const buttonClassName = useMemoClassName(STYLES.button, {
+    [STYLES.buttonSoldOut]: isSoldOut,
+    [STYLES.buttonActive]: !isSoldOut,
+  })
 
   return (
     <article 
-      className={`${STYLES.productCard} ${isSoldOut ? STYLES.productCardSoldOut : ''}`}
-      aria-label={`${name}, ${formatPrice(price)}, ${isSoldOut ? '품절' : '구매 가능'}`}
+      className={cardClassName}
+      aria-label={ariaLabel}
     >
+      {/* 상태 배지 */}
+      {isPopular && <ProductBadge type="popular" />}
+      {isUrgent && <ProductBadge type="urgent" />}
+      {isComplete && !isSoldOut && <ProductBadge type="complete" />}
+      
       {/* 품절 오버레이 */}
       {isSoldOut && (
         <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-10">
@@ -31,6 +57,9 @@ export function ProductCard({ product }: ProductCardProps) {
           </span>
         </div>
       )}
+      
+      {/* 상태 인디케이터 - 카드 하단 얇은 컬러 바 */}
+      {!isSoldOut && <ProductStatusIndicator status={status} />}
       
       {/* 이미지 영역 */}
       <div className={STYLES.imageWrapper}>
@@ -44,6 +73,9 @@ export function ProductCard({ product }: ProductCardProps) {
       
       {/* 상품 정보 */}
       <div className={STYLES.productInfo}>
+        {/* 카테고리 해시태그 */}
+        <CategoryTag categoryName={product.category.subCategoryName} />
+        
         {/* 상품명 */}
         <h2 className={STYLES.productName}>{name}</h2>
         
@@ -68,13 +100,7 @@ export function ProductCard({ product }: ProductCardProps) {
               className={STYLES.progressBar}
             >
               <div
-                className={`${STYLES.progressFill} ${
-                  isComplete
-                    ? 'bg-[#1E7F4F]'
-                    : isUrgent
-                    ? 'bg-[#F2C94C]'
-                    : 'bg-gray-400'
-                }`}
+                className={progressBarClassName}
                 style={{ width: `${progressPercentage}%` }}
               />
             </div>
@@ -91,9 +117,7 @@ export function ProductCard({ product }: ProductCardProps) {
           disabled={isSoldOut}
           aria-label={isSoldOut ? `${name} - 품절` : `${name} - 구매하기`}
           aria-disabled={isSoldOut}
-          className={`${STYLES.button} ${
-            isSoldOut ? STYLES.buttonSoldOut : STYLES.buttonActive
-          }`}
+          className={buttonClassName}
         >
           {isSoldOut ? '품절' : '구매하기'}
         </button>
@@ -101,3 +125,12 @@ export function ProductCard({ product }: ProductCardProps) {
     </article>
   )
 }
+
+ProductCardComponent.displayName = 'ProductCard'
+
+/**
+ * 메모이제이션된 ProductCard 컴포넌트
+ * 
+ * product 객체의 참조가 변경되지 않으면 리렌더링 방지
+ */
+export const ProductCard = memo(ProductCardComponent, compareProductProps)

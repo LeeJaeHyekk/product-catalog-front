@@ -39,11 +39,18 @@ export * from './constants'
 // 유틸리티 함수 export
 export * from './utils'
 
+// 커스텀 훅 export
+export * from './hooks'
+
 // 공통 스타일 export
 export { STYLES } from './styles'
 
 // 상품 처리 함수 export (클라이언트/서버 모두 사용 가능)
 export * from './product'
+
+// 카테고리 관련 export
+export type { EnrichedProduct, ProductCategoryInfo, FilterOptions } from './product'
+export { filterProducts, getAvailableSubCategories } from './product'
 
 // 이미지 관련 export (클라이언트/서버 공통)
 export { isOptimizableImage, getImageSrc, IMAGE_CONFIG } from './image/optimizer'

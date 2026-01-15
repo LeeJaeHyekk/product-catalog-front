@@ -1,7 +1,7 @@
-import { ProductGrid } from './ProductGrid'
 import { fetchProducts } from '@/lib/api' // 서버 전용 직접 import
-import { processProducts } from '@/lib/product' // 상품 처리 모듈
+import { processAndEnrichProducts } from '@/lib/product' // 상품 처리 및 보강 모듈
 import { NotFoundError } from '@/lib/errors'
+import { ProductGridWithFilters } from './ProductGridWithFilters'
 
 /**
  * 상품 목록 서버 컴포넌트
@@ -20,13 +20,16 @@ import { NotFoundError } from '@/lib/errors'
  * - 도메인별 에러 타입(NotFoundError 등)을 사용하여 적절한 UI 표시
  */
 export async function ProductsListServer() {
-  const products = await fetchProducts()
-  const processedProducts = processProducts(products)
+  // 1. API 호출
+  const rawProducts = await fetchProducts()
+  
+  // 2. 한 번에 가공 (카테고리 포함)
+  const enrichedProducts = processAndEnrichProducts(rawProducts)
 
   // 빈 배열인 경우 NotFoundError 던지기 (선택적)
-  if (processedProducts.length === 0) {
+  if (enrichedProducts.length === 0) {
     throw new NotFoundError('상품')
   }
 
-  return <ProductGrid products={processedProducts} />
+  return <ProductGridWithFilters products={enrichedProducts} />
 }
