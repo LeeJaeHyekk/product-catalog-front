@@ -26,7 +26,6 @@ interface KiwiAnalysisResult {
 /**
  * Kiwi 라이브러리 로드 시도
  */
-let kiwiModule: KiwiModule | null = null
 let kiwiInstance: KiwiInstance | null = null
 let kiwiAvailable = false
 
@@ -55,8 +54,6 @@ async function initializeKiwi(): Promise<boolean> {
       kiwiAvailable = false
       return false
     }
-    
-    kiwiModule = kiwi
     
     // Kiwi 인스턴스 생성 (small 모델로 시작 - 빠른 속도)
     if (kiwi.default && typeof kiwi.default === 'function') {

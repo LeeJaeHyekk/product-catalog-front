@@ -188,13 +188,19 @@ export function calculateWordMatchInfo(
     
     for (let i = 0; i < productWordList.length; i++) {
       const pWord = productWordList[i]
-      if (pWord.length >= 2) {
+      if (!pWord || pWord.length < 2) {
+        continue
+      }
+      {
         let bestMatch = 0
         let bestMatchIndex = -1
         const isCoreNoun = coreNounSet.has(pWord.toLowerCase())
         
         for (let j = 0; j < imageWordList.length; j++) {
           const iWord = imageWordList[j]
+          if (!iWord) {
+            continue
+          }
           
           // 완전히 다른 단어는 제외 (길이 차이가 너무 크면 제외)
           const lengthDiff = Math.abs(pWord.length - iWord.length)
@@ -275,8 +281,15 @@ export function calculateWordMatchInfo(
               let prevMatchIndex = -1
               for (let k = 0; k < i; k++) {
                 const prevWord = productWordList[k]
+                if (!prevWord) {
+                  continue
+                }
                 for (let m = 0; m < imageWordList.length; m++) {
-                  if (imageWordList[m].includes(prevWord) || prevWord.includes(imageWordList[m])) {
+                  const imgWord = imageWordList[m]
+                  if (!imgWord) {
+                    continue
+                  }
+                  if (imgWord.includes(prevWord) || prevWord.includes(imgWord)) {
                     prevMatchIndex = m
                     break
                   }
@@ -294,7 +307,8 @@ export function calculateWordMatchInfo(
   
   const wordMatchRatio = includedWords > 0 ? includedWords / productWordList.length : 0
   const avgScore = includedWords > 0 ? totalMatchScore / includedWords : 0
-  const wordInclusionScore = (wordMatchRatio * 0.6 + avgScore * 0.4)
+  // wordInclusionScore 계산 (현재 사용되지 않음, 향후 확장 가능)
+  // const wordInclusionScore = (wordMatchRatio * 0.6 + avgScore * 0.4)
   
   const allWordsMatched = includedWords === productWordList.length && wordMatchRatio >= 1.0
   const orderMatchRatio = includedWords > 0 ? orderedMatches / includedWords : 0

@@ -9,21 +9,26 @@
  * 한글 자모를 로마자로 변환하는 기본 매핑
  * 
  * 간단한 로마자 표기법 (실용적 접근)
+ * 초성과 종성은 다른 매핑을 사용
  */
-const HANGUL_TO_ROMAN: Record<string, string> = {
+const HANGUL_INITIAL_TO_ROMAN: Record<string, string> = {
   // 초성
   'ㄱ': 'g', 'ㄲ': 'kk', 'ㄴ': 'n', 'ㄷ': 'd', 'ㄸ': 'tt',
   'ㄹ': 'r', 'ㅁ': 'm', 'ㅂ': 'b', 'ㅃ': 'pp', 'ㅅ': 's',
   'ㅆ': 'ss', 'ㅇ': '', 'ㅈ': 'j', 'ㅉ': 'jj', 'ㅊ': 'ch',
   'ㅋ': 'k', 'ㅌ': 't', 'ㅍ': 'p', 'ㅎ': 'h',
-  
+}
+
+const HANGUL_MEDIAL_TO_ROMAN: Record<string, string> = {
   // 중성
   'ㅏ': 'a', 'ㅐ': 'ae', 'ㅑ': 'ya', 'ㅒ': 'yae', 'ㅓ': 'eo',
   'ㅔ': 'e', 'ㅕ': 'yeo', 'ㅖ': 'ye', 'ㅗ': 'o', 'ㅘ': 'wa',
   'ㅙ': 'wae', 'ㅚ': 'oe', 'ㅛ': 'yo', 'ㅜ': 'u', 'ㅝ': 'wo',
   'ㅞ': 'we', 'ㅟ': 'wi', 'ㅠ': 'yu', 'ㅡ': 'eu', 'ㅢ': 'ui',
   'ㅣ': 'i',
-  
+}
+
+const HANGUL_FINAL_TO_ROMAN: Record<string, string> = {
   // 종성
   'ㄱ': 'k', 'ㄲ': 'k', 'ㄳ': 'k', 'ㄴ': 'n', 'ㄵ': 'n',
   'ㄶ': 'n', 'ㄷ': 't', 'ㄹ': 'l', 'ㄺ': 'k', 'ㄻ': 'm',
@@ -132,11 +137,14 @@ export function romanizeHangul(text: string): string {
   
   for (let i = 0; i < text.length; i++) {
     const char = text[i]
+    if (!char) {
+      continue
+    }
     const decomposed = decomposeHangul(char)
     
     if (decomposed) {
       // 초성 변환
-      let initial = HANGUL_TO_ROMAN[decomposed.initial] || ''
+      let initial = HANGUL_INITIAL_TO_ROMAN[decomposed.initial] || ''
       
       // 종성 + 초성 조합 규칙 처리
       if (prevFinal && initial) {
@@ -150,11 +158,11 @@ export function romanizeHangul(text: string): string {
       }
       
       // 중성 변환
-      const medial = HANGUL_TO_ROMAN[decomposed.medial] || ''
+      const medial = HANGUL_MEDIAL_TO_ROMAN[decomposed.medial] || ''
       
       // 종성 변환
       const final = decomposed.final
-        ? HANGUL_TO_ROMAN[decomposed.final] || ''
+        ? HANGUL_FINAL_TO_ROMAN[decomposed.final] || ''
         : ''
       
       // 조합 규칙 적용
