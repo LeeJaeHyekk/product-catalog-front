@@ -11,7 +11,7 @@ import type { ImageFile, MatchResult } from '../types'
  * 유사도 기반 매칭 시도
  */
 export function trySimilarityMatch(
-  productName: string,
+  _productName: string, // 원본 상품명 (현재 사용되지 않음, 인터페이스 호환성을 위해 유지)
   imageFile: ImageFile,
   normalizedProduct: string,
   productRoman: string
@@ -40,10 +40,10 @@ export function trySimilarityMatch(
   
   if (productWords.length > 0 && imageWords.length > 0) {
     for (const pWord of productWords) {
-      if (pWord.length < 3) continue
+      if (!pWord || pWord.length < 3) continue
       
       for (const iWord of imageWords) {
-        if (iWord.length < 3) continue
+        if (!iWord || iWord.length < 3) continue
         
         // 단어 길이 차이 체크
         const lengthDiff = Math.abs(pWord.length - iWord.length)

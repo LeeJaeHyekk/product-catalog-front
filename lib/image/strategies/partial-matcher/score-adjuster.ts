@@ -3,7 +3,7 @@
  */
 
 // splitIntoWords는 현재 사용되지 않음
-import type { WordMatchInfo } from '../../scoring/score-calculator'
+import type { WordMatchInfo } from '../../types'
 import type { CoreNounMatchResult } from './core-noun-matcher'
 import type { ModifierMatchResult } from './modifier-matcher'
 
@@ -62,12 +62,14 @@ export function adjustScore(
     const productSecondWord = productWords[1]
     const imageSecondWord = imageWords[1]
     
-    if (productSecondWord !== imageSecondWord &&
-        !imageSecondWord.includes(productSecondWord) &&
-        !productSecondWord.includes(imageSecondWord)) {
-      finalScore *= 0.6
-    } else if (productSecondWord === imageSecondWord) {
-      finalScore = Math.min(0.95, finalScore + 0.1)
+    if (productSecondWord && imageSecondWord) {
+      if (productSecondWord !== imageSecondWord &&
+          !imageSecondWord.includes(productSecondWord) &&
+          !productSecondWord.includes(imageSecondWord)) {
+        finalScore *= 0.6
+      } else if (productSecondWord === imageSecondWord) {
+        finalScore = Math.min(0.95, finalScore + 0.1)
+      }
     }
   }
   

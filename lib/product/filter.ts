@@ -20,6 +20,12 @@ export interface FilterOptions {
   categoryId?: string
   /** 검색어 (상품명) */
   searchQuery?: string
+  /** 검색 모드 (AND/OR) */
+  searchMode?: 'AND' | 'OR'
+  /** 퍼지 검색 활성화 */
+  fuzzySearch?: boolean
+  /** 유사도 임계값 */
+  similarityThreshold?: number
   /** 최소 가격 */
   minPrice?: number
   /** 최대 가격 */
@@ -162,7 +168,7 @@ export function filterProducts(
         if (hasMultipleKeywords) {
           // 다중 키워드 검색
           const result = multiKeywordSearch(p.name, options.searchQuery!, searchMode)
-          if (result.matched) {
+          if (result.matched && searchScores) {
             searchScores.set(p, result.score)
             return true
           }
@@ -174,7 +180,7 @@ export function filterProducts(
             similarityThreshold,
           })
           
-          if (relevance.score > 0) {
+          if (relevance.score > 0 && searchScores) {
             searchScores.set(p, relevance.score)
             return true
           }

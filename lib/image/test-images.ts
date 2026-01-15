@@ -32,7 +32,8 @@ export function getRandomTestImage(): string {
  * 인덱스 기반 이미지 URL 반환
  */
 export function getTestImageByIndex(index: number): string {
-  return TEST_IMAGE_URLS[index % TEST_IMAGE_URLS.length]
+  const url = TEST_IMAGE_URLS[index % TEST_IMAGE_URLS.length]
+  return url ?? ''
 }
 
 /**
