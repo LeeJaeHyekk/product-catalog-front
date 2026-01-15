@@ -17,7 +17,7 @@ import { ProductGridSkeleton, ProductsListServer } from '@/components/product'
 export default function ProductsPage() {
   return (
     <BackgroundImage
-      imagePath="/ProductPageImage.png"
+      imagePath="/mainPage/HeroImage.png"
       overlayType="light"
       brandOverlayOpacity={8}
       fixed={true}
