@@ -6,6 +6,7 @@
 
 import type { EnrichedProduct } from './category'
 import { ValidationError } from '../errors'
+import { isArray } from '../validation'
 import { normalizeTextForMatching } from '../utils/string'
 import { calculateRelevance, multiKeywordSearch, sortByRelevance } from '../utils/search'
 
@@ -42,7 +43,8 @@ export function filterProducts(
   products: EnrichedProduct[],
   options: FilterOptions
 ): EnrichedProduct[] {
-  if (!Array.isArray(products)) {
+  // 타입 가드를 사용한 안전한 검증
+  if (!isArray(products)) {
     throw new ValidationError('상품 목록은 배열이어야 합니다.')
   }
 
@@ -281,11 +283,13 @@ export function filterProducts(
     })
   } else if (searchScores) {
     // 검색어가 있지만 정렬 기준이 지정되지 않은 경우, 관련도 순으로 자동 정렬
-    filtered.sort((a, b) => {
-      const aScore = searchScores!.get(a) ?? 0
-      const bScore = searchScores!.get(b) ?? 0
-      return sortByRelevance(a, b, aScore, bScore)
-    })
+    if (searchScores) {
+      filtered.sort((a, b) => {
+        const aScore = searchScores.get(a) ?? 0
+        const bScore = searchScores.get(b) ?? 0
+        return sortByRelevance(a, b, aScore, bScore)
+      })
+    }
   }
 
   return filtered
@@ -303,7 +307,8 @@ export function getAvailableSubCategories(products: EnrichedProduct[]): Array<{
   name: string
   count: number
 }> {
-  if (!Array.isArray(products)) {
+  // 타입 가드를 사용한 안전한 검증
+  if (!isArray(products)) {
     throw new ValidationError('상품 목록은 배열이어야 합니다.')
   }
 
@@ -343,9 +348,21 @@ export function getAvailableSubCategories(products: EnrichedProduct[]): Array<{
   }
 
   return Array.from(categoryMap.entries())
-    .map(([id, { name, count }]) => ({ id, name, count }))
+    .map(([id, data]) => {
+      // 안전성: id와 data가 유효한지 확인
+      if (!id || typeof id !== 'string' || !data || typeof data !== 'object') {
+        return null
+      }
+      const { name, count } = data
+      // 안전성: name과 count가 유효한지 확인
+      if (typeof name !== 'string' || typeof count !== 'number' || !isFinite(count) || count < 0) {
+        return null
+      }
+      return { id, name, count }
+    })
+    .filter((item): item is { id: string; name: string; count: number } => item !== null)
     .sort((a, b) => {
-      // 안정성: name이 유효한지 확인
+      // 안정성: name이 유효한지 확인 (이미 필터링했지만 추가 보호)
       const aName = typeof a.name === 'string' ? a.name : ''
       const bName = typeof b.name === 'string' ? b.name : ''
       return aName.localeCompare(bName, 'ko')

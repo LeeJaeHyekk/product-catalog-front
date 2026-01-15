@@ -145,4 +145,25 @@ npm start
 - **엔드포인트**: `https://api.zeri.pics`
 - **응답 형식**: `Product[]` 배열
 
+## 배포
+
+### 배포 주소
+배포된 주소: [배포 주소를 여기에 추가하세요]
+
+### 배포 방법
+
+#### Vercel (권장)
+1. [Vercel](https://vercel.com)에 GitHub 레포지토리 연결
+2. 자동으로 빌드 및 배포됩니다
+3. 환경 변수가 필요한 경우 Vercel 대시보드에서 설정
+
+#### 수동 배포
+```bash
+# 빌드
+npm run build
+
+# 프로덕션 실행
+npm start
+```
+
 자세한 설계 내용은 `docs/design/design-structure.md`를 참고하세요.

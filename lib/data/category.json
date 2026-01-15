@@ -250,6 +250,7 @@
             "쿠키",
             "초코칩 쿠키",
             "초코칩쿠키",
+            "초코파이",
             "과자",
             "스낵",
             "크래커",
@@ -257,6 +258,10 @@
             "칩",
             "감자칩",
             "옥수수칩",
+            "새우깡",
+            "양파링",
+            "고구마 스틱",
+            "고구마스틱",
             "프레첼",
             "나초",
             "팝콘",
@@ -270,7 +275,6 @@
             "해바라기씨",
             "호박씨",
             "약과",
-            "전통 약과",
             "인절미 과자",
             "고소한 인절미 과자",
             "인절미과자",
@@ -303,6 +307,8 @@
             "cookies",
             "chocolate chip cookie",
             "chocolate chip cookies",
+            "choco pie",
+            "chocopie",
             "snack",
             "snacks",
             "cracker",
@@ -313,6 +319,11 @@
             "chips",
             "potato chips",
             "corn chips",
+            "shrimp cracker",
+            "shrimp crackers",
+            "onion rings",
+            "sweet potato stick",
+            "sweetpotatostick",
             "pretzel",
             "pretzels",
             "nachos",
@@ -332,10 +343,8 @@
             "macadamias",
             "sunflower seeds",
             "pumpkin seeds",
-            "traditional sweets",
             "yakgwa",
             "injeolmi snack",
-            "korean traditional sweets",
             "yugwa",
             "gangjeong",
             "dasik",
@@ -463,7 +472,10 @@
             "crepe",
             "crepes",
             "brownie",
-            "brownies"
+            "brownies",
+            "traditional sweets",
+            "korean traditional sweets",
+            "yakgwa"
           ]
         }
       ]
@@ -491,6 +503,8 @@
             "식물성음료",
             "주스",
             "오렌지주스",
+            "착즙 오렌지 주스",
+            "착즙오렌지주스",
             "사과주스",
             "포도주스",
             "딸기주스",
@@ -571,6 +585,8 @@
             "plant-based drink",
             "juice",
             "orange juice",
+            "fresh squeezed orange juice",
+            "squeezed orange juice",
             "apple juice",
             "grape juice",
             "strawberry juice",
@@ -735,7 +751,9 @@
             "냉동돈까스",
             "냉동생선까스",
             "냉동새우까스",
-            "냉동치킨까스"
+            "냉동치킨까스",
+            "치즈볼",
+            "치즈 볼"
           ],
           "englishItems": [
             "frozen dumpling",
@@ -768,7 +786,9 @@
             "frozen tonkatsu",
             "frozen fish cutlet",
             "frozen shrimp cutlet",
-            "frozen chicken cutlet"
+            "frozen chicken cutlet",
+            "cheese ball",
+            "cheeseball"
           ]
         },
         {
@@ -814,7 +834,12 @@
             "도시락",
             "완제품 국",
             "완제품 찌개",
-            "즉석 덮밥"
+            "즉석 덮밥",
+            "바질 페스토",
+            "바질페스토",
+            "페스토",
+            "치즈 돈까스",
+            "치즈돈까스"
           ],
           "englishItems": [
             "ramen",
@@ -860,7 +885,12 @@
             "prepared soup",
             "ready stew",
             "prepared stew",
-            "instant rice bowl"
+            "instant rice bowl",
+            "basil pesto",
+            "pesto",
+            "cheese tonkatsu",
+            "cheesetonkatsu",
+            "cheese pork cutlet"
           ]
         }
       ]
@@ -884,7 +914,17 @@
             "감바스",
             "밀키트",
             "조리 키트",
-            "조리키트"
+            "조리키트",
+            "부대찌개 밀키트",
+            "부대찌개밀키트",
+            "부대찌개",
+            "찌개 밀키트",
+            "찌개밀키트",
+            "국 밀키트",
+            "국밀키트",
+            "밀폐유나베",
+            "밀푀유나베",
+            "밀푀유 나베"
           ],
           "englishItems": [
             "korean meal kit",
@@ -895,7 +935,15 @@
             "gambas al ajillo",
             "gambas",
             "meal kit",
-            "cooking kit"
+            "cooking kit",
+            "budae jjigae meal kit",
+            "budaejjigae meal kit",
+            "army stew meal kit",
+            "stew meal kit",
+            "soup meal kit",
+            "mille feuille nabe",
+            "millefeuillenabe",
+            "millefeuille nabe"
           ]
         },
         {

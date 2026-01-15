@@ -1,9 +1,9 @@
 'use client'
 
-import { useMemo } from 'react'
 import type { EnrichedProduct } from '@/lib/product'
-import { getAvailableSubCategories } from '@/lib/product'
 import { COLORS } from '@/lib/constants'
+import { useCategorySelection } from '@/lib/hooks'
+import { CategoryButton } from './CategoryButton'
 
 interface CategoryFilterProps {
   /** 상품 목록 (카테고리 정보 포함) */
@@ -25,11 +25,11 @@ export function CategoryFilter({
   selectedSubCategoryId,
   onCategoryChange,
 }: CategoryFilterProps) {
-  // 사용 가능한 카테고리 목록 (실제 상품에 존재하는 것만)
-  const availableCategories = useMemo(
-    () => getAvailableSubCategories(products),
-    [products]
-  )
+  // 카테고리 선택 로직 (모듈화된 훅 사용)
+  const { availableCategories } = useCategorySelection({
+    products,
+    selectedSubCategoryId,
+  })
 
   return (
     <div className="flex flex-col gap-4">
@@ -57,44 +57,26 @@ export function CategoryFilter({
       {/* 카테고리 칩들 */}
       <div className="flex gap-2.5 flex-wrap">
         {/* 전체 버튼 */}
-        <button
+        <CategoryButton
+          id="전체"
+          name="전체"
+          count={products.length}
+          isSelected={selectedSubCategoryId === '전체'}
           onClick={() => onCategoryChange('전체')}
-          className={`px-5 py-2.5 rounded-full font-medium text-sm transition-all duration-200 transform hover:scale-105 active:scale-95 ${
-            selectedSubCategoryId === '전체'
-              ? `${COLORS.primary.bg} text-white shadow-lg shadow-[#1E7F4F]/25`
-              : `${COLORS.background.bgMain} ${COLORS.text.primaryClass} hover:${COLORS.primary.bgWithOpacity(10)} border border-gray-200/60 hover:border-[#1E7F4F]/40 shadow-sm hover:shadow`
-          }`}
-        >
-          전체
-          <span className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${
-            selectedSubCategoryId === '전체'
-              ? 'bg-white/25 text-white'
-              : `${COLORS.primary.bgWithOpacity(15)} ${COLORS.primary.text}`
-          }`}>
-            {products.length}
-          </span>
-        </button>
+          variant="chip"
+        />
 
         {/* 카테고리 버튼들 */}
         {availableCategories.map(({ id, name, count }) => (
-          <button
+          <CategoryButton
             key={id}
+            id={id}
+            name={name}
+            count={count}
+            isSelected={selectedSubCategoryId === id}
             onClick={() => onCategoryChange(id)}
-            className={`px-5 py-2.5 rounded-full font-medium text-sm transition-all duration-200 transform hover:scale-105 active:scale-95 ${
-              selectedSubCategoryId === id
-                ? `${COLORS.primary.bg} text-white shadow-lg shadow-[#1E7F4F]/25`
-                : `${COLORS.background.bgMain} ${COLORS.text.primaryClass} hover:${COLORS.primary.bgWithOpacity(10)} border border-gray-200/60 hover:border-[#1E7F4F]/40 shadow-sm hover:shadow`
-            }`}
-          >
-            {name}
-            <span className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${
-              selectedSubCategoryId === id
-                ? 'bg-white/25 text-white'
-                : `${COLORS.primary.bgWithOpacity(15)} ${COLORS.primary.text}`
-            }`}>
-              {count}
-            </span>
-          </button>
+            variant="chip"
+          />
         ))}
       </div>
     </div>

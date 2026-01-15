@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useRef, useEffect, useMemo } from 'react'
+import { useState, useRef } from 'react'
 import type { EnrichedProduct } from '@/lib/product'
-import { getAvailableSubCategories } from '@/lib/product'
 import { COLORS } from '@/lib/constants'
-import { useMemoClassName } from '@/lib/hooks'
+import { useMemoClassName, useClickOutside, useEscapeKey, useCategorySelection } from '@/lib/hooks'
+import { CategoryButton } from './CategoryButton'
 
 interface CategoryDropdownProps {
   /** 상품 목록 (카테고리 정보 포함) */
@@ -29,54 +29,23 @@ export function CategoryDropdown({
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  // 사용 가능한 카테고리 목록 (실제 상품에 존재하는 것만)
-  const availableCategories = useMemo(
-    () => getAvailableSubCategories(products),
-    [products]
-  )
+  // 카테고리 선택 로직 (모듈화된 훅 사용)
+  const { availableCategories, selectedCategoryName, selectedCategoryCount } = useCategorySelection({
+    products,
+    selectedSubCategoryId,
+  })
 
-  // 선택된 카테고리 이름 찾기
-  const selectedCategoryName = useMemo(() => {
-    if (selectedSubCategoryId === '전체') {
-      return '전체'
-    }
-    const category = availableCategories.find(cat => cat.id === selectedSubCategoryId)
-    return category?.name || '전체'
-  }, [selectedSubCategoryId, availableCategories])
+  // 외부 클릭 시 드롭다운 닫기 (모듈화된 훅 사용)
+  useClickOutside(dropdownRef, {
+    handler: () => setIsOpen(false),
+    enabled: isOpen,
+  })
 
-  // 외부 클릭 시 드롭다운 닫기
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false)
-      }
-    }
-
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside)
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [isOpen])
-
-  // ESC 키로 닫기
-  useEffect(() => {
-    function handleEscape(event: KeyboardEvent) {
-      if (event.key === 'Escape' && isOpen) {
-        setIsOpen(false)
-      }
-    }
-
-    if (isOpen) {
-      document.addEventListener('keydown', handleEscape)
-    }
-
-    return () => {
-      document.removeEventListener('keydown', handleEscape)
-    }
-  }, [isOpen])
+  // ESC 키로 닫기 (모듈화된 훅 사용)
+  useEscapeKey({
+    handler: () => setIsOpen(false),
+    enabled: isOpen,
+  })
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen)
@@ -88,7 +57,7 @@ export function CategoryDropdown({
   }
 
   const buttonClassName = useMemoClassName(
-    'flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm transition-all duration-200 border-2',
+    'flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm transition-all duration-300 ease-out border-2',
     {
       [`${COLORS.primary.bg} text-white border-[#1E7F4F] shadow-lg shadow-[#1E7F4F]/25`]: isOpen || selectedSubCategoryId !== '전체',
       [`${COLORS.background.bgMain} ${COLORS.text.primaryClass} border-gray-200 hover:border-[#1E7F4F]/40 hover:${COLORS.primary.bgWithOpacity(10)}`]: !isOpen && selectedSubCategoryId === '전체',
@@ -107,7 +76,7 @@ export function CategoryDropdown({
       >
         {/* 필터 아이콘 */}
         <svg
-          className={`w-5 h-5 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+          className={`w-5 h-5 transition-transform duration-300 ease-out ${isOpen ? 'rotate-180' : ''}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -130,7 +99,7 @@ export function CategoryDropdown({
               ? 'bg-white/25 text-white'
               : `${COLORS.primary.bgWithOpacity(15)} ${COLORS.primary.text}`
           }`}>
-            {availableCategories.find(cat => cat.id === selectedSubCategoryId)?.count || 0}
+            {selectedCategoryCount}
           </span>
         )}
       </button>
@@ -186,44 +155,28 @@ export function CategoryDropdown({
             {/* 카테고리 목록 */}
             <div className="space-y-2">
               {/* 전체 버튼 */}
-              <button
+              <CategoryButton
+                id="전체"
+                name="전체"
+                count={products.length}
+                isSelected={selectedSubCategoryId === '전체'}
                 onClick={() => handleCategorySelect('전체')}
-                className={`w-full px-4 py-3 rounded-xl font-medium text-sm transition-all duration-200 text-left flex items-center justify-between ${
-                  selectedSubCategoryId === '전체'
-                    ? `${COLORS.primary.bg} text-white shadow-md`
-                    : `${COLORS.background.bgMain} ${COLORS.text.primaryClass} hover:${COLORS.primary.bgWithOpacity(10)} border border-gray-200/60`
-                }`}
-              >
-                <span>전체</span>
-                <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                  selectedSubCategoryId === '전체'
-                    ? 'bg-white/25 text-white'
-                    : `${COLORS.primary.bgWithOpacity(15)} ${COLORS.primary.text}`
-                }`}>
-                  {products.length}
-                </span>
-              </button>
+                variant="default"
+                className="w-full"
+              />
 
               {/* 카테고리 버튼들 */}
               {availableCategories.map(({ id, name, count }) => (
-                <button
+                <CategoryButton
                   key={id}
+                  id={id}
+                  name={name}
+                  count={count}
+                  isSelected={selectedSubCategoryId === id}
                   onClick={() => handleCategorySelect(id)}
-                  className={`w-full px-4 py-3 rounded-xl font-medium text-sm transition-all duration-200 text-left flex items-center justify-between ${
-                    selectedSubCategoryId === id
-                      ? `${COLORS.primary.bg} text-white shadow-md`
-                      : `${COLORS.background.bgMain} ${COLORS.text.primaryClass} hover:${COLORS.primary.bgWithOpacity(10)} border border-gray-200/60`
-                  }`}
-                >
-                  <span>{name}</span>
-                  <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                    selectedSubCategoryId === id
-                      ? 'bg-white/25 text-white'
-                      : `${COLORS.primary.bgWithOpacity(15)} ${COLORS.primary.text}`
-                  }`}>
-                    {count}
-                  </span>
-                </button>
+                  variant="default"
+                  className="w-full"
+                />
               ))}
             </div>
           </div>

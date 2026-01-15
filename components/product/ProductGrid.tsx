@@ -31,26 +31,16 @@ export function ProductGrid({ products }: ProductGridProps) {
     )
   }
   
-  // 첫 카드 여부 계산 메모이제이션
-  const firstCardClassName = useMemo(
-    () => 'transform transition-all duration-300 hover:scale-[1.02]',
-    []
-  )
-
   return (
     <div className={STYLES.grid}>
-      {products.map((product, idx) => {
-        const isFirstCard = idx === 0
-        
-        return (
-          <div
-            key={createProductKey(product, idx)}
-            className={isFirstCard ? firstCardClassName : ''}
-          >
-            <ProductCard product={product} />
-          </div>
-        )
-      })}
+      {products.map((product, idx) => (
+        <div
+          key={createProductKey(product, idx)}
+          className="transform transition-all duration-300 ease-out hover:scale-[1.02]"
+        >
+          <ProductCard product={product} />
+        </div>
+      ))}
     </div>
   )
 }

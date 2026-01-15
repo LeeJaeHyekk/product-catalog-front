@@ -73,7 +73,7 @@ export function SearchBar({
     <form onSubmit={handleSubmit} className="w-full relative">
       <div className="relative">
         {/* 검색 아이콘 */}
-        <div className={`absolute left-4 top-1/2 -translate-y-1/2 ${query ? COLORS.primary.text : COLORS.text.secondaryClass} pointer-events-none transition-colors duration-200`}>
+        <div className={`absolute left-4 top-1/2 -translate-y-1/2 ${query ? COLORS.primary.text : COLORS.text.secondaryClass} pointer-events-none transition-colors duration-300 ease-out`}>
           <svg
             className="w-5 h-5"
             fill="none"
@@ -98,7 +98,7 @@ export function SearchBar({
           style={{
             paddingRight: `${layout.inputPaddingRight}px`,
           }}
-          className={`w-full pl-12 py-4 ${COLORS.background.bgMain} backdrop-blur-sm border-2 ${query ? `${COLORS.primary.border} border-opacity-50` : 'border-gray-200'} rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1E7F4F]/30 focus:border-[#1E7F4F] transition-all duration-200 shadow-sm hover:shadow-md hover:border-[#1E7F4F]/40 ${COLORS.text.primaryClass} placeholder:${COLORS.text.secondaryClass}`}
+          className={`w-full pl-12 py-4 ${COLORS.background.bgMain} backdrop-blur-sm border-2 ${query ? `${COLORS.primary.border} border-opacity-50` : 'border-gray-200'} rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1E7F4F]/30 focus:border-[#1E7F4F] transition-all duration-300 ease-out shadow-sm hover:shadow-md hover:border-[#1E7F4F]/40 ${COLORS.text.primaryClass} placeholder:${COLORS.text.secondaryClass}`}
         />
 
         {/* 오른쪽 요소 (카테고리 버튼 등) */}
@@ -120,7 +120,7 @@ export function SearchBar({
             ref={clearButtonRef}
             type="button"
             onClick={handleClear}
-            className={`absolute top-1/2 -translate-y-1/2 ${COLORS.text.secondaryClass} hover:${COLORS.primary.text} transition-colors duration-200 p-1.5 rounded-full hover:bg-[#1E7F4F]/10 z-10`}
+            className={`absolute top-1/2 -translate-y-1/2 ${COLORS.text.secondaryClass} hover:${COLORS.primary.text} transition-all duration-300 ease-out p-1.5 rounded-full hover:bg-[#1E7F4F]/10 z-10`}
             style={{
               right: rightElement ? `${layout.clearButtonRight}px` : `${SEARCH_BAR.gap}px`,
             }}

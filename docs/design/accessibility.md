@@ -20,7 +20,7 @@
 
 - **중장년 사용자 비중이 높음**: 공동구매 특성상 다양한 연령대 사용
 - **정보 접근성 필수**: 가격, 수량, 마감 시간 등 핵심 정보
-- **법적 요구사항**: WCAG 2.1 AA 기준 준수 권장
+- **법적 요구사항**: WCAG 2.1 AA 기준 준수
 
 ### 핵심 원칙
 
@@ -52,7 +52,7 @@
 <p className="text-gray-900">일반 텍스트</p>
 <p className="text-[#1E7F4F]">Primary Green 텍스트</p>
 
-// 대비 부족 예시 (피해야 함)
+// 대비 부족 예시
 <p className="text-yellow-400">노란색 텍스트 (대비 부족)</p>
 
 // 개선 예시: 배경색 추가
@@ -62,11 +62,11 @@
 ### 색상만으로 상태 구분 금지
 
 ```tsx
-// ❌ 나쁜 예: 색상만으로 상태 구분
+// 개선 전: 색상만으로 상태 구분
 <div className="bg-green-500">성공</div>
 <div className="bg-red-500">실패</div>
 
-// ✅ 좋은 예: 텍스트 + 아이콘 추가
+// 개선 후: 텍스트 + 아이콘 추가
 <div className="bg-green-100 text-green-900 flex items-center gap-2">
   <CheckIcon className="w-4 h-4" />
   <span>성공</span>
@@ -99,14 +99,14 @@
 ### 가독성 최적화
 
 ```tsx
-// ✅ 좋은 예: 충분한 크기와 간격
+// 개선 후: 충분한 크기와 간격
 <div className="space-y-2">
   <h3 className="text-base font-semibold">상품명</h3>
   <p className="text-lg font-semibold">12,900원</p>
   <p className="text-sm text-gray-600">잔여 25 / 100</p>
 </div>
 
-// ❌ 나쁜 예: 너무 작은 텍스트
+// 개선 전: 너무 작은 텍스트
 <p className="text-xs">12,900원</p> {/* 12px - 너무 작음 */}
 ```
 
@@ -123,22 +123,22 @@
 ### 구현 예시
 
 ```tsx
-// ✅ 좋은 예: 충분한 터치 영역
+// 개선 후: 충분한 터치 영역
 <button className="min-h-[44px] min-w-[44px] px-4 py-2">
   구매하기
 </button>
 
-// ✅ 좋은 예: 패딩으로 터치 영역 확보
+// 개선 후: 패딩으로 터치 영역 확보
 <a className="block py-3 px-4">상품 상세</a>
 
-// ❌ 나쁜 예: 터치 영역 부족
+// 개선 전: 터치 영역 부족
 <button className="h-8 px-2">구매</button> {/* 32px - 너무 작음 */}
 ```
 
 ### Hover + Focus 상태
 
 ```tsx
-// ✅ 좋은 예: Hover와 Focus 모두 정의
+// 개선 후: Hover와 Focus 모두 정의
 <button className="
   bg-green-600 text-white px-6 py-2 rounded
   hover:bg-green-700
@@ -148,7 +148,7 @@
   구매하기
 </button>
 
-// ✅ 키보드 포커스 시각화
+// 키보드 포커스 시각화
 <button className="
   focus-visible:outline-none
   focus-visible:ring-2
@@ -162,7 +162,7 @@
 ### 비활성화 상태
 
 ```tsx
-// ✅ 좋은 예: 명확한 비활성화 상태
+// 개선 후: 명확한 비활성화 상태
 <button
   disabled
   className="
@@ -182,7 +182,7 @@
 ### ARIA 라벨 사용
 
 ```tsx
-// ✅ 좋은 예: 명확한 라벨
+// 개선 후: 명확한 라벨
 <article
   aria-label={`${name}, ${formatPrice(price)}, ${isSoldOut ? '품절' : '구매 가능'}`}
 >
@@ -190,7 +190,7 @@
   {/* ... */}
 </article>
 
-// ✅ 좋은 예: 상태 정보 제공
+// 개선 후: 상태 정보 제공
 <div
   role="progressbar"
   aria-valuenow={current}
@@ -205,7 +205,7 @@
 ### 숨김 텍스트 (Screen Reader Only)
 
 ```tsx
-// ✅ 좋은 예: 시각적으로 숨기지만 스크린 리더는 읽음
+// 개선 후: 시각적으로 숨기지만 스크린 리더는 읽음
 <span className="sr-only">상품명: {name}</span>
 <span className="sr-only">가격: {formatPrice(price)}</span>
 
@@ -226,7 +226,7 @@
 ### 상태 정보 제공
 
 ```tsx
-// ✅ 좋은 예: 상태 정보 명확히
+// 개선 후: 상태 정보 명확히
 <button
   aria-label={isSoldOut ? `${name} - 품절` : `${name} - 구매하기`}
   aria-disabled={isSoldOut}
@@ -234,7 +234,7 @@
   {isSoldOut ? '품절' : '구매하기'}
 </button>
 
-// ✅ 좋은 예: 진행률 정보
+// 개선 후: 진행률 정보
 <div
   aria-label={`공동구매 진행률: ${current} / ${target}, ${(current / target) * 100}%`}
 >
@@ -245,21 +245,21 @@
 ### 이미지 대체 텍스트
 
 ```tsx
-// ✅ 좋은 예: 의미 있는 alt 텍스트
+// 개선 후: 의미 있는 alt 텍스트
 <img
   src={image}
   alt={`${name} 상품 이미지`}
   loading="lazy"
 />
 
-// ✅ 좋은 예: 장식용 이미지는 빈 alt
+// 개선 후: 장식용 이미지는 빈 alt
 <img
   src="/decorative-pattern.svg"
   alt=""
   aria-hidden="true"
 />
 
-// ✅ 좋은 예: 이미지 없을 때
+// 개선 후: 이미지 없을 때
 <div
   className="aspect-square bg-gray-100 flex items-center justify-center"
   aria-label="이미지 준비중"
@@ -281,7 +281,7 @@
 ### 구현 예시
 
 ```tsx
-// ✅ 좋은 예: 키보드 접근 가능한 카드
+// 개선 후: 키보드 접근 가능한 카드
 <article
   tabIndex={0}
   className="focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
@@ -294,7 +294,7 @@
   {/* 상품 카드 내용 */}
 </article>
 
-// ✅ 좋은 예: 스킵 링크
+// 개선 후: 스킵 링크
 <a
   href="#main-content"
   className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-green-600 text-white px-4 py-2 rounded"
@@ -363,7 +363,7 @@ useEffect(() => {
 ### 테스트 도구
 
 - **Chrome DevTools**: Lighthouse 접근성 감사
-- **axe DevTools**: 접근성 문제 자동 감지
+- **axe DevTools**: 접근성 이슈 자동 감지
 - **WAVE**: 웹 접근성 평가 도구
 - **스크린 리더**: NVDA (Windows), VoiceOver (Mac)
 

@@ -348,7 +348,7 @@ export function processProducts(products: Product[]): ProcessedProduct[] {
 * **메모이제이션 가능**: `useMemo`로 최적화 가능하도록 설계
 * **Referential Equality**: 입력이 동일하면 동일한 참조 유지 가능
 
-**📌 설계 의도: 책임 분리 가능성**
+**설계 의도: 책임 분리 가능성**
 
 `processProducts`는 내부적으로 다음 단계로 구성됩니다:
 
@@ -391,7 +391,7 @@ export function processProducts(products: Product[]): ProcessedProduct[] {
 }
 ```
 
-**⚠️ 실무 고려사항:**
+**실무 고려사항:**
 
 현재는 단일 함수로 충분하지만, 실무에서 다음과 같은 경우 함수 분리를 고려합니다:
 
@@ -419,7 +419,7 @@ export function processProducts(products: Product[]): ProcessedProduct[] {
 
 ### 8.1 기술 스택 선택: TanStack Query (React Query)
 
-**권장 이유:**
+**이유:**
 
 * **1~5초 랜덤 지연 자동 처리** → 로딩 / 에러 / 캐싱 자동 관리
 * **재시도 로직 내장** → 네트워크 오류 시 자동 재시도
@@ -462,7 +462,7 @@ export function useProducts() {
 * **UI 컴포넌트 단순화** → 비즈니스 로직과 완전 분리
 * **캐싱 효율성** → 원본 데이터는 캐시, 가공 데이터는 파생 상태로 관리
 
-**⚠️ 실무 고려사항: `select` + `suspense` 조합의 유연성**
+**실무 고려사항: `select` + `suspense` 조합의 유연성**
 
 `select` + `suspense` 조합은 실무에서 호불호가 갈리는 패턴입니다.
 
@@ -519,7 +519,7 @@ export function useProducts() {
 
 ## 9. 로딩 및 지연 응답 UX 설계
 
-### 9.1 문제 정의
+### 9.1 개요
 
 * 최대 5초 지연 동안 빈 화면 노출 시 사용자 이탈 가능성 증가
 * 로딩 중 레이아웃 변화로 인한 사용자 혼란
@@ -547,11 +547,11 @@ export function ProductSkeleton() {
 
 **Skeleton UI 원칙:**
 
-* ✅ 실제 카드와 동일한 크기 및 레이아웃
-* ✅ 이미지 영역, 텍스트 영역 구조 동일
-* ✅ 애니메이션으로 로딩 상태 명확히 표시
-* ❌ 스피너만 띄우기 금지
-* ❌ 빈 화면 노출 금지
+* 실제 카드와 동일한 크기 및 레이아웃
+* 이미지 영역, 텍스트 영역 구조 동일
+* 애니메이션으로 로딩 상태 명확히 표시
+* 스피너만 띄우는 것은 지양
+* 빈 화면 노출은 지양
 
 **사용자 경험 (체감 성능 최적화):**
 
@@ -579,7 +579,7 @@ export function ProductSkeleton() {
 
 Suspense Fallback의 단위가 너무 크면 세밀한 로딩 제어가 어렵습니다.
 
-**권장 개선: Grid Skeleton과 Card Skeleton 분리**
+**고려사항: Grid Skeleton과 Card Skeleton 분리**
 
 ```tsx
 // components/product/ProductGridSkeleton.tsx
@@ -603,9 +603,9 @@ export function ProductGridSkeleton() {
 
 **단위 분리의 장점:**
 
-* ✅ Grid 레이아웃과 Card 단위를 독립적으로 관리
-* ✅ 재사용성 향상 (다른 페이지에서도 활용 가능)
-* ✅ 세밀한 로딩 상태 제어 가능
+* Grid 레이아웃과 Card 단위를 독립적으로 관리
+* 재사용성 향상 (다른 페이지에서도 활용 가능)
+* 세밀한 로딩 상태 제어 가능
 
 **설계 원칙:**
 
@@ -663,7 +663,7 @@ export function ProductGridSkeleton() {
 
 ## 11. 품절 상품 UI 설계
 
-### 11.1 시각적 처리 요소 (복합 적용 권장)
+### 11.1 시각적 처리 요소
 
 품절 상품은 **단일 요소가 아닌 복합적인 시각적 처리**로 명확히 구분해야 합니다.
 
@@ -872,7 +872,7 @@ export function Container({ children }: { children: React.ReactNode }) {
 
 ## 12.5 대용량 데이터 대응 전략 (확장 설계)
 
-### 12.5.1 문제 정의
+### 12.5.1 개요
 
 현재 설계는 50개 상품 기준으로 최적화되어 있으나, 
 실서비스 환경에서는 수천~수만 개의 상품을 처리해야 할 수 있습니다.
@@ -963,10 +963,10 @@ export function ProductGridVirtual({ products }: ProductGridVirtualProps) {
 
 **장점:**
 
-* ✅ 기존 `processProducts` 로직 재사용
-* ✅ `ProductCard` 컴포넌트 재사용
-* ✅ 데이터 가공 로직 변경 없이 UI만 교체
-* ✅ 점진적 적용 가능 (상품 수에 따라 조건부 렌더링)
+* 기존 `processProducts` 로직 재사용
+* `ProductCard` 컴포넌트 재사용
+* 데이터 가공 로직 변경 없이 UI만 교체
+* 점진적 적용 가능 (상품 수에 따라 조건부 렌더링)
 
 **조건부 적용 예시:**
 
@@ -989,7 +989,7 @@ export function ProductGrid({ products }: { products: ProcessedProduct[] }) {
 }
 ```
 
-**👉 구조를 바꾸지 않고 대응 가능함을 강조**
+**구조를 바꾸지 않고 대응 가능함을 강조**
 
 ---
 
@@ -1014,7 +1014,7 @@ export function ProductGrid({ products }: { products: ProcessedProduct[] }) {
 
 ### 12.6.2 렌더링 최소화 (Virtualized Rendering)
 
-**문제 정의:**
+**개요:**
 
 * 상품 수 증가 → DOM 증가 → 렌더링 병목
 * 데이터 정렬 자체보다 **렌더링 비용이 압도적**
@@ -1038,16 +1038,16 @@ export function ProductGrid({ products }: { products: ProcessedProduct[] }) {
 
 **라이브러리 선택:**
 
-* `@tanstack/react-virtual` (권장) - TanStack Query와 통합 용이
+* `@tanstack/react-virtual` - TanStack Query와 통합 용이
 * `react-window` - 경량 대안
 
-**👉 대용량 대응의 핵심 알고리즘**
+**대용량 대응의 핵심 알고리즘**
 
 ---
 
 ### 12.6.3 파생 상태 계산 최적화 (Memoization)
 
-**문제 정의:**
+**개요:**
 
 매 렌더마다 다음 계산이 반복됨:
 * 품절 여부 계산 (`isSoldOut`)
@@ -1096,7 +1096,7 @@ export function useProducts() {
 * 입력 데이터가 동일하면 동일한 결과 보장
 * Referential Equality로 불필요한 재렌더링 방지
 
-**👉 이미 구조는 맞음 - "의도적으로 메모이제이션 가능하게 설계했다"는 점이 중요**
+**이미 구조는 맞음 - "의도적으로 메모이제이션 가능하게 설계했다"는 점이 중요**
 
 ---
 
@@ -1132,7 +1132,7 @@ export function useProducts() {
 데이터 규모 증가 시 **정렬 책임을 서버로 이전**하여
 클라이언트는 렌더링에 집중하도록 설계한다.
 
-**👉 알고리즘을 바꾸는 게 아니라 '책임을 이동'**
+**알고리즘을 바꾸는 게 아니라 '책임을 이동'**
 
 ---
 
@@ -1254,7 +1254,7 @@ const worker = new Worker(new URL('@/lib/product.worker.ts', import.meta.url))
 // Worker에서 데이터 가공 후 결과 받기
 ```
 
-**👉 "필요하면 여기까지 갈 수 있다"는 인식만 있어도 충분**
+**"필요하면 여기까지 갈 수 있다"는 인식만 있어도 충분**
 
 #### Cache 전략 (TanStack Query)
 
@@ -1291,13 +1291,13 @@ export function useProducts() {
 
 | 최적화 항목 | 적용 시점 | 효과 | 우선순위 |
 |------------|---------|------|---------|
-| **Virtualized Rendering** | 1000개 이상 | 렌더링 비용 O(n) → O(visible) | 🔴 최고 |
-| **Memoization** | 항상 | 불필요한 재계산 방지 | 🔴 높음 |
-| **Stable Sort** | 항상 | 정렬 순서 보장 | 🟡 중간 |
-| **Skeleton UX** | 항상 | 체감 성능 개선 | 🟡 중간 |
-| **Debounce/Throttle** | 확장 시 | 입력 최적화 | 🟢 낮음 |
-| **Web Worker** | 수만 개 이상 | Main Thread 블로킹 방지 | 🟢 선택 |
-| **Cache 전략** | 항상 | 네트워크 요청 최소화 | 🟡 중간 |
+| **Virtualized Rendering** | 1000개 이상 | 렌더링 비용 O(n) → O(visible) | - |
+| **Memoization** | 항상 | 불필요한 재계산 방지 | 높음 |
+| **Stable Sort** | 항상 | 정렬 순서 보장 | 중간 |
+| **Skeleton UX** | 항상 | 체감 성능 개선 | 중간 |
+| **Debounce/Throttle** | 확장 시 | 입력 최적화 | 낮음 |
+| **Web Worker** | 수만 개 이상 | Main Thread 블로킹 방지 | 선택 |
+| **Cache 전략** | 항상 | 네트워크 요청 최소화 | 중간 |
 
 **설계 원칙:**
 
@@ -1416,22 +1416,22 @@ export function processProducts(
 
 ### 15.1 데이터 가공 로직 (`processProducts`) 엣지 케이스
 
-#### ❌ 문제점 1: 빈 배열 처리 누락
+#### 고려사항 1: 빈 배열 처리
 
 **현재 코드:**
 ```ts
 export function processProducts(products: Product[]): ProcessedProduct[] {
-  // products가 빈 배열일 때도 정상 동작하지만, 명시적 처리 없음
+  // products가 빈 배열일 때도 동작하지만, 명시적 처리 없음
   const mapped = products.map(...)
   // ...
 }
 ```
 
-**문제:**
-* 빈 배열 입력 시 빈 배열 반환 (정상 동작)
+**현재 상태:**
+* 빈 배열 입력 시 빈 배열 반환
 * 하지만 빈 배열인 경우에 대한 명시적 처리나 로깅이 없음
 
-**권장 수정:**
+**개선 예시:**
 ```ts
 export function processProducts(products: Product[]): ProcessedProduct[] {
   if (!products || products.length === 0) {
@@ -1443,13 +1443,13 @@ export function processProducts(products: Product[]): ProcessedProduct[] {
 
 ---
 
-#### ❌ 문제점 2: null/undefined 값 처리 누락
+#### 고려사항 2: null/undefined 값 처리
 
-**문제:**
+**현재 상태:**
 * `products`가 `null` 또는 `undefined`일 때 런타임 에러 발생 가능
 * `products[index]`의 필드가 `null`/`undefined`일 때 처리 없음
 
-**권장 수정:**
+**개선 예시:**
 ```ts
 export function processProducts(products: Product[]): ProcessedProduct[] {
   if (!products || !Array.isArray(products)) {
@@ -1468,14 +1468,14 @@ export function processProducts(products: Product[]): ProcessedProduct[] {
 
 ---
 
-#### ❌ 문제점 3: 음수 값 및 비정상 데이터 처리
+#### 고려사항 3: 음수 값 및 비정상 데이터 처리
 
-**문제:**
-* `current < 0` 또는 `limit < 0`일 때 비정상 동작
-* `index`가 음수이거나 범위를 벗어날 때 정렬 문제
-* `price`가 음수일 때 UI 표시 문제
+**현재 상태:**
+* `current < 0` 또는 `limit < 0`일 때 동작 이슈 가능
+* `index`가 음수이거나 범위를 벗어날 때 정렬 이슈 가능
+* `price`가 음수일 때 UI 표시 이슈 가능
 
-**권장 수정:**
+**개선 예시:**
 ```ts
 export function processProducts(products: Product[]): ProcessedProduct[] {
   const mapped = products
@@ -1499,13 +1499,13 @@ export function processProducts(products: Product[]): ProcessedProduct[] {
 
 ---
 
-#### ❌ 문제점 4: 중복 index 처리
+#### 고려사항 4: 중복 index 처리
 
-**문제:**
+**현재 상태:**
 * 동일한 `index`를 가진 상품이 여러 개일 때 정렬 순서가 불확실
 * `sort()`는 안정 정렬이지만, 동일 index의 순서가 보장되지 않음
 
-**권장 수정:**
+**개선 예시:**
 ```ts
 const available = mapped
   .filter(p => !p.isSoldOut)
@@ -1518,9 +1518,9 @@ const available = mapped
 
 ---
 
-### 15.2 TanStack Query 설정 문제
+### 15.2 TanStack Query 설정 고려사항
 
-#### ❌ 문제점 5: Suspense 모드와 에러 바운더리 관계 불명확
+#### 고려사항 5: Suspense 모드와 에러 바운더리 관계
 
 **현재 코드:**
 ```ts
@@ -1532,12 +1532,12 @@ export function useProducts() {
 }
 ```
 
-**문제:**
+**현재 상태:**
 * `suspense: true`일 때 에러는 자동으로 가장 가까운 Error Boundary로 전파
 * 하지만 `select` 함수에서 에러가 발생하면 어떻게 처리되는지 불명확
 * `processProducts`에서 에러 발생 시 에러 바운더리로 전파되는지 확인 필요
 
-**권장 수정:**
+**개선 예시:**
 ```ts
 export function useProducts() {
   return useQuery({
@@ -1560,18 +1560,18 @@ export function useProducts() {
 
 ---
 
-#### ❌ 문제점 6: retry 로직이 부적절할 수 있음
+#### 고려사항 6: retry 로직
 
 **현재 코드:**
 ```ts
 retry: 3, // 실패 시 3회 재시도
 ```
 
-**문제:**
+**현재 상태:**
 * 4xx 에러(클라이언트 오류)도 재시도함 → 불필요한 요청
 * 5xx 에러만 재시도해야 함
 
-**권장 수정:**
+**개선 예시:**
 ```ts
 retry: (failureCount, error) => {
   // 4xx 에러는 재시도하지 않음
@@ -1587,13 +1587,13 @@ retry: (failureCount, error) => {
 
 ---
 
-#### ❌ 문제점 7: QueryClientProvider 설정 누락
+#### 고려사항 7: QueryClientProvider 설정
 
-**문제:**
+**현재 상태:**
 * `useQuery`를 사용하려면 `QueryClientProvider`가 필요
 * Next.js App Router에서 Provider 설정 위치가 명시되지 않음
 
-**권장 추가:**
+**추가 예시:**
 ```tsx
 // app/providers.tsx
 'use client'
@@ -1619,16 +1619,16 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
 ---
 
-### 15.3 API 응답 검증 문제
+### 15.3 API 응답 검증 고려사항
 
-#### ❌ 문제점 8: 런타임 타입 검증 없음
+#### 고려사항 8: 런타임 타입 검증
 
-**문제:**
+**현재 상태:**
 * TypeScript는 컴파일 타임 타입 체크만 수행
 * API 응답이 예상과 다를 때 런타임 에러 발생 가능
 * `fetchProducts`에서 응답 검증이 없음
 
-**권장 수정:**
+**개선 예시:**
 ```ts
 // lib/api.ts
 import { z } from 'zod' // 또는 다른 스키마 검증 라이브러리
@@ -1661,7 +1661,7 @@ export async function fetchProducts(): Promise<Product[]> {
 }
 ```
 
-**⚠️ 실무 고려사항: Zod 검증 위치의 전제 조건**
+**실무 고려사항: Zod 검증 위치의 전제 조건**
 
 **본 설계의 전제 조건:**
 
@@ -1675,7 +1675,7 @@ export async function fetchProducts(): Promise<Product[]> {
 | **실서비스 환경** | 서버에서 1차 검증 + 클라이언트 경량 검증 | 성능 최적화, 서버 신뢰성 높음 |
 | **대용량 환경** | 클라이언트 검증 생략 또는 최소화 | 성능 부담 최소화 |
 
-**실서비스 권장 전략:**
+**실서비스 고려 전략:**
 
 ```ts
 // lib/api.ts (실서비스 버전)
@@ -1709,15 +1709,15 @@ export async function fetchProducts(): Promise<Product[]> {
 
 ---
 
-### 15.4 UI 렌더링 문제
+### 15.4 UI 렌더링 고려사항
 
-#### ❌ 문제점 9: 빈 상태(Empty State) 처리 누락
+#### 고려사항 9: 빈 상태(Empty State) 처리
 
-**문제:**
+**현재 상태:**
 * 모든 상품이 품절이거나 데이터가 없을 때 빈 화면 표시
 * 사용자에게 명확한 피드백 없음
 
-**권장 추가:**
+**추가 예시:**
 ```tsx
 // components/product/ProductGrid.tsx
 export function ProductGrid({ products }: { products: ProcessedProduct[] }) {
@@ -1747,7 +1747,7 @@ export function ProductGrid({ products }: { products: ProcessedProduct[] }) {
 
 ---
 
-#### ❌ 문제점 10: key prop 최적화 문제
+#### 고려사항 10: key prop 최적화
 
 **현재 코드:**
 ```tsx
@@ -1756,11 +1756,11 @@ export function ProductGrid({ products }: { products: ProcessedProduct[] }) {
 ))}
 ```
 
-**문제:**
+**현재 상태:**
 * `index`가 중복될 수 있음 (위에서 언급)
 * `index`만으로는 고유성 보장 불가
 
-**권장 수정 (임시 방편):**
+**개선 예시 (임시 방편):**
 ```tsx
 // index와 name을 조합하거나, 고유 ID가 있다면 사용
 {products.map((product, idx) => (
@@ -1771,15 +1771,15 @@ export function ProductGrid({ products }: { products: ProcessedProduct[] }) {
 ))}
 ```
 
-**⚠️ 실무 고려사항: key 전략의 한계**
+**실무 고려사항: key 전략의 한계**
 
-**현재 key 전략의 문제점:**
+**현재 key 전략의 고려사항:**
 
 * `idx` 포함 → 재정렬 시 불필요한 리렌더 발생
 * `index + name` 조합 → name이 변경되면 key 변경으로 리렌더 발생
 * 실무에서는 "임시 방편"으로 봄
 
-**권장 해결책:**
+**해결책 예시:**
 
 **현재 API에 고유 ID가 없기 때문에 `index + name` 조합을 사용합니다.**
 **실서비스 환경에서는 반드시 서버에서 고유 ID를 제공받아야 합니다.**
@@ -1796,7 +1796,7 @@ export function ProductGrid({ products }: { products: ProcessedProduct[] }) {
 ))}
 ```
 
-**API 스펙 개선 권장:**
+**API 스펙 개선 예시:**
 
 ```ts
 interface Product {
@@ -1807,19 +1807,19 @@ interface Product {
 }
 ```
 
-**👉 솔직함 = 신뢰도 상승**
+**솔직함 = 신뢰도 상승**
 
 ---
 
-### 15.5 성능 및 메모이제이션 문제
+### 15.5 성능 및 메모이제이션 고려사항
 
-#### ❌ 문제점 11: select 함수 메모이제이션 누락
+#### 고려사항 11: select 함수 메모이제이션
 
-**문제:**
+**현재 상태:**
 * `select` 함수가 매번 새로 생성되면 불필요한 재계산 발생
 * `processProducts`가 매 렌더마다 실행될 수 있음
 
-**권장 수정:**
+**개선 예시:**
 ```ts
 // lib/product.ts
 import { useMemo } from 'react'
@@ -1862,15 +1862,15 @@ export function useProducts() {
 
 ---
 
-### 15.6 접근성(A11y) 문제
+### 15.6 접근성(A11y) 고려사항
 
-#### ❌ 문제점 12: 접근성 고려 부족
+#### 고려사항 12: 접근성
 
-**문제:**
+**현재 상태:**
 * 품절 상품의 시각적 처리만 있고 스크린 리더 대응 부족
 * 버튼 비활성화 시 접근성 속성 누락
 
-**권장 수정:**
+**개선 예시:**
 ```tsx
 <button 
   disabled={isSoldOut}
@@ -1884,15 +1884,15 @@ export function useProducts() {
 
 ---
 
-### 15.7 Next.js App Router 특성 문제
+### 15.7 Next.js App Router 특성 고려사항
 
-#### ❌ 문제점 13: 서버/클라이언트 컴포넌트 경계 불명확
+#### 고려사항 13: 서버/클라이언트 컴포넌트 경계
 
-**문제:**
+**현재 상태:**
 * `useQuery`는 클라이언트 컴포넌트에서만 사용 가능
 * `page.tsx`가 서버 컴포넌트인지 클라이언트 컴포넌트인지 명시되지 않음
 
-**권장 수정:**
+**개선 예시:**
 ```tsx
 // app/products/page.tsx
 import { Suspense } from 'react'
@@ -1920,13 +1920,13 @@ export function ProductListClient() {
 
 ---
 
-### 15.8 요약: 발견된 문제점 및 우선순위
+### 15.8 요약: 고려사항 및 우선순위
 
-| 우선순위 | 문제점 | 영향도 | 해결 난이도 |
+| 우선순위 | 고려사항 | 영향도 | 해결 난이도 |
 |---------|--------|--------|------------|
-| 🔴 **높음** | 런타임 타입 검증 없음 | 높음 | 중간 |
-| 🔴 **높음** | null/undefined 처리 누락 | 높음 | 낮음 |
-| 🔴 **높음** | QueryClientProvider 설정 누락 | 높음 | 낮음 |
+| 높음 | 런타임 타입 검증 없음 | 높음 | 중간 |
+| 높음 | null/undefined 처리 누락 | 높음 | 낮음 |
+| 높음 | QueryClientProvider 설정 누락 | 높음 | 낮음 |
 | 🟡 **중간** | 음수 값 검증 없음 | 중간 | 낮음 |
 | 🟡 **중간** | 중복 index 처리 불명확 | 중간 | 낮음 |
 | 🟡 **중간** | 빈 상태 처리 누락 | 중간 | 낮음 |
@@ -1958,8 +1958,8 @@ export function ProductListClient() {
    * 새로운 에러 타입 추가 용이
    * 기존 코드 수정 최소화
 
-**👉 "에러를 그냥 catch해서 메시지 뿌린다" ❌**
-**👉 "에러를 타입과 레이어로 관리한다" ⭕**
+**에러를 그냥 catch해서 메시지 뿌리는 방식은 지양**
+**에러를 타입과 레이어로 관리하는 방식을 적용**
 
 ### 16.2 에러 타입 구조
 
@@ -2080,7 +2080,7 @@ export async function ProductsListServer() {
 }
 ```
 
-**👉 Server Component에서 에러를 던지면 Error Boundary가 자동으로 처리**
+**Server Component에서 에러를 던지면 Error Boundary가 자동으로 처리**
 
 ### 16.4 Error Boundary 구성 (Next.js App Router)
 
@@ -2136,7 +2136,7 @@ export default function ProductsError({
 }
 ```
 
-**👉 페이지 단위 격리 = 확장성 핵심**
+**페이지 단위 격리 = 확장성 핵심**
 
 #### 16.4.3 공통 에러 UI
 
@@ -2163,7 +2163,7 @@ export function ErrorFallback({ error, title, onReset }: ErrorFallbackProps) {
   return (
     <Container>
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-        <h2 className="text-xl font-bold">{title ?? '문제가 발생했습니다'}</h2>
+        <h2 className="text-xl font-bold">{title ?? '오류가 발생했습니다'}</h2>
         <p className="text-gray-600">{errorMessage}</p>
         {onReset && (
           <button onClick={onReset}>다시 시도</button>

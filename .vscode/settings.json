@@ -1,0 +1,34 @@
+{
+  // PowerShell Extension 설정
+  "powershell.enableProfileLoading": false,
+  "powershell.scriptAnalysis.enable": false,
+  "powershell.integratedConsole.showOnStartup": false,
+  
+  // 기본 터미널 설정 (Git Bash 사용)
+  "terminal.integrated.defaultProfile.windows": "Git Bash",
+  "terminal.integrated.profiles.windows": {
+    "Git Bash": {
+      "path": "C:\\Program Files\\Git\\bin\\bash.exe",
+      "args": []
+    },
+    "PowerShell": {
+      "source": "PowerShell",
+      "icon": "terminal-powershell"
+    }
+  },
+  
+  // PowerShell Extension 비활성화 (선택사항)
+  "powershell.powerShellDefaultVersion": null,
+  
+  // 파일 관련 설정
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/node_modules": true,
+    "**/.next": true
+  },
+  
+  // TypeScript/JavaScript 설정
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true
+}

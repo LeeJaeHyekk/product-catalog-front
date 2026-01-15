@@ -21,6 +21,8 @@ export { ProductStatusIndicator } from './ProductStatusIndicator'
 // 필터 및 검색 컴포넌트
 export { CategoryFilter } from './CategoryFilter'
 export { CategoryPanel } from './CategoryPanel'
+export { CategoryButton } from './CategoryButton'
+export { CategoryBadge } from './CategoryBadge'
 export { SearchBar } from './SearchBar'
 export { ProductGridWithFilters } from './ProductGridWithFilters'
 

@@ -3,4 +3,4 @@
  */
 
 export * from './guards'
-export * from './api'
+export { isApiResponse, isApiResponseItem } from './api'

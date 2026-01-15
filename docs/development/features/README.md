@@ -1,97 +1,51 @@
-# 기능 문서화
+# 기능 구현 문서
 
-이 디렉토리는 프로젝트에 추가된 주요 기능들을 문서화합니다.
+프로젝트에서 구현한 주요 기능들에 대한 상세 문서입니다.
 
-## 기능 목록
+## 주요 기능
 
-### 1. 로딩 스피너
-- **파일**: `loading-spinner.md`
+### 1. 타입 가드 (Type Guards)
+- **문서**: [type-guards.md](./type-guards.md)
+- **설명**: 런타임 타입 검증을 위한 타입 가드 함수들
+- **위치**: `lib/validation/guards.ts`, `lib/validation/api.ts`
+
+### 2. 에러 페이지 시스템
+- **문서**: [error-pages.md](./error-pages.md)
+- **설명**: 각 에러 타입에 대해 동적으로 다른 UI를 표시하는 에러 페이지 시스템
+- **위치**: `components/error/`, `lib/utils/error-config.ts`
+
+### 3. 로딩 스피너
+- **문서**: [loading-spinner.md](./loading-spinner.md)
 - **설명**: 로딩 상태 시각화 컴포넌트
+- **위치**: `components/ui/LoadingSpinner.tsx`
 
-### 2. 타입 가드
-- **파일**: `type-guards.md`
-- **설명**: 런타임 타입 검증 시스템
-
-### 3. 안정성 향상
-- **파일**: `stability-improvements.md`
+### 4. 안정성 향상
+- **문서**: [stability-improvements.md](./stability-improvements.md)
 - **설명**: 안정성을 높이는 알고리즘 및 방식
+- **위치**: 전역
 
-### 4. 이미지 매칭
-- **파일**: `image-matching.md`
-- **설명**: 상품명과 이미지 파일명 자동 매칭 알고리즘 및 이미지 최적화
+### 5. 이미지 매칭
+- **문서**: [image-matching.md](./image-matching.md)
+- **설명**: 상품명과 이미지 파일명 자동 매칭 알고리즘
+- **위치**: `lib/image/matcher.ts`
 
-### 5. 컴포넌트 모듈화
-- **설명**: 재사용 가능한 컴포넌트 모듈화
-- **주요 컴포넌트**:
-  - `BackgroundImage`: 배경 이미지 및 오버레이 통합 관리
-  - `PageHeader`: 일관된 페이지 헤더 구조
-  - `ProductBadge`: 상품 상태 배지
-  - `ProductStatusIndicator`: 카드 하단 컬러 바
-  - `Button`: 일관된 버튼 스타일
-  - `TrustCard`: 신뢰 요소 카드
+### 6. 카테고리 분류 및 검색/필터
+- **문서**: [category-filter-search.md](./category-filter-search.md)
+- **설명**: 카테고리 기반 분류 및 검색 기능
+- **위치**: `lib/product/category.ts`, `lib/product/filter.ts`
 
-### 6. 컬러 시스템 통합
-- **설명**: design-tokens 기반 컬러 상수 모듈화
-- **주요 기능**:
-  - 하드코딩된 컬러 값 제거
-  - Tailwind CSS 클래스 헬퍼 함수 제공
-  - 일관된 컬러 사용
+### 7. 데이터 처리 아키텍처
+- **문서**: [data-processing-architecture.md](./data-processing-architecture.md)
+- **설명**: 데이터 처리 흐름 및 구조
+- **위치**: `lib/product/`
 
-### 7. 렌더링 최적화
-- **설명**: React.memo 및 useMemo를 활용한 렌더링 개선
-- **주요 기능**:
-  - ProductCard 메모이제이션
-  - 계산 로직 최적화
-  - className 문자열 메모이제이션
-  - filter 연산 최적화
+### 8. 검색 및 필터 개선
+- **문서**: [search-filter-improvements.md](./search-filter-improvements.md)
+- **설명**: 검색 기능 개선 사항
+- **위치**: `lib/utils/search.ts`, `lib/product/filter.ts`
 
-### 8. 카테고리 분류 및 검색/필터
-- **파일**: `category-filter-search.md`
-- **설명**: 카테고리 분류 및 검색/필터 기능 설계
-- **주요 내용**:
-  - 메모리 기반 처리 (DB 없음)
-  - 메타데이터 파일 방식
-  - 데이터베이스 사용 방식
-  - 단계별 구현 계획
+## 빠른 링크
 
-### 9. 데이터 재가공 아키텍처
-- **파일**: `data-processing-architecture.md`
-- **설명**: 효율적인 데이터 처리 구조 설계
-- **주요 내용**:
-  - 서버에서 한 번에 가공 (카테고리 포함)
-  - 클라이언트에서 필터링만 수행
-  - 중간 저장소 불필요한 구조
-  - 성능 개선 전략
-
-### 10. SearchBar 모듈화
-- **파일**: `search-bar-modularization.md`
-- **설명**: SearchBar 컴포넌트의 레이아웃 계산 로직을 재사용 가능한 모듈로 분리
-- **주요 내용**:
-  - UI 상수 통합 (`lib/constants/ui.ts`)
-  - 레이아웃 계산 유틸리티 (`lib/utils/layout.ts`)
-  - 요소 크기 측정 훅 (`lib/hooks/useElementSize.ts`)
-  - 동적 레이아웃 계산 훅 (`lib/hooks/useDynamicLayout.ts`)
-
-### 11. 검색 및 필터 기능 개선
-- **파일**: `search-filter-improvements.md`
-- **설명**: 검색 기능의 안정성과 정확성 향상
-- **주요 내용**:
-  - 검색 상태 동기화 개선
-  - 검색 필터링 로직 개선 (부분 문자열 검색 제거)
-  - 안정성 개선 (메모리 누수 방지, 타입 안전성)
-
-### 12. 테스트 이미지 가이드
-- **파일**: `test-images.md`
-- **설명**: 개발 환경에서 테스트 이미지 사용 방법
-
-## 추가 기능 문서 작성 방법
-
-새로운 기능이 추가되면 다음 형식으로 문서를 작성하세요:
-
-1. `docs/features/[feature-name].md` 파일 생성
-2. 다음 섹션 포함:
-   - 구현 내용
-   - 사용 방법
-   - 장점
-   - 예시 코드
-3. 이 README에 기능 목록 추가
+- [타입 가드](./type-guards.md)
+- [에러 페이지](./error-pages.md)
+- [카테고리 분류 및 검색/필터](./category-filter-search.md)

@@ -9,11 +9,11 @@ import { COLORS } from './constants/colors'
 
 export const STYLES = {
   // 상품 카드
-  productCard: 'product-card relative border border-gray-200 rounded-lg overflow-hidden bg-white shadow-md hover:shadow-lg transition-all duration-200 backdrop-blur-sm',
-  productCardSoldOut: 'opacity-50 grayscale',
+  productCard: 'product-card relative border border-gray-200 rounded-lg overflow-hidden bg-white shadow-md hover:shadow-lg transition-all duration-300 ease-out backdrop-blur-sm',
+  productCardSoldOut: 'opacity-50 grayscale transition-opacity duration-300 ease-out',
   
   // 이미지
-  imageWrapper: `image-wrapper aspect-square ${COLORS.background.bgMain} rounded overflow-hidden relative`,
+  imageWrapper: `image-wrapper aspect-square ${COLORS.background.bgMain} rounded overflow-hidden relative transition-transform duration-300 ease-out`,
   imagePlaceholder: `w-full h-full flex items-center justify-center ${COLORS.text.secondaryClass} text-sm`,
   
   // 상품 정보
@@ -23,13 +23,13 @@ export const STYLES = {
   
   // 진행률 (공동구매 특화)
   progressBar: 'w-full bg-gray-200 rounded-full h-2 mb-2',
-  progressFill: 'h-2 rounded-full transition-all duration-300',
+  progressFill: 'h-2 rounded-full transition-all duration-500 ease-out',
   progressText: 'text-xs text-text-secondary',
   
   // 버튼
-  button: 'mt-2 w-full min-h-[44px] py-2 px-4 rounded font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2',
+  button: 'mt-2 w-full min-h-[44px] py-2 px-4 rounded font-semibold transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2',
   buttonSoldOut: 'bg-gray-300 cursor-not-allowed text-gray-500',
-  buttonActive: `${COLORS.primary.bg} text-white hover:${COLORS.primary.bgLight} focus:ring-[#1E7F4F]`,
+  buttonActive: `${COLORS.primary.bg} text-white hover:${COLORS.primary.bgLight} focus:ring-[#1E7F4F] active:scale-[0.98]`,
   
   // 그리드
   grid: 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4',

@@ -46,25 +46,42 @@ export function levenshteinDistance(str1: string, str2: string): number {
 
   // 초기값 설정
   for (let i = 0; i <= len1; i++) {
-    matrix[i][0] = i
+    const row = matrix[i]
+    if (row) {
+      row[0] = i
+    }
   }
-  for (let j = 0; j <= len2; j++) {
-    matrix[0][j] = j
+  const firstRow = matrix[0]
+  if (firstRow) {
+    for (let j = 0; j <= len2; j++) {
+      firstRow[j] = j
+    }
   }
 
   // 거리 계산
   for (let i = 1; i <= len1; i++) {
+    const currentRow = matrix[i]
+    if (!currentRow) continue
+    
+    const prevRow = matrix[i - 1]
+    if (!prevRow) continue
+    
     for (let j = 1; j <= len2; j++) {
       const cost = str1[i - 1] === str2[j - 1] ? 0 : 1
-      matrix[i][j] = Math.min(
-        matrix[i - 1][j] + 1, // 삭제
-        matrix[i][j - 1] + 1, // 삽입
-        matrix[i - 1][j - 1] + cost // 교체
+      const prevCol = prevRow[j] ?? 0
+      const currentCol = currentRow[j - 1] ?? 0
+      const prevDiag = prevRow[j - 1] ?? 0
+      
+      currentRow[j] = Math.min(
+        prevCol + 1, // 삭제
+        currentCol + 1, // 삽입
+        prevDiag + cost // 교체
       )
     }
   }
 
-  return matrix[len1][len2]
+  const lastRow = matrix[len1]
+  return lastRow?.[len2] ?? 0
 }
 
 /**

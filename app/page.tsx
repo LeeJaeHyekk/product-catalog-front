@@ -4,44 +4,38 @@ import { Button, TrustCard } from '@/components/ui'
 export default function Home() {
   return (
     <BackgroundImage
-      imagePath="/HeroImage.png"
+      imagePath="/mainPage/HeroImage.png"
       overlayType="dark"
       brandOverlayOpacity={10}
       fixed={false}
     >
       <div className="min-h-screen flex items-center justify-center">
         <Container>
-          <div className="text-center px-4 py-16">
+          <div className="text-center px-4 py-12 md:py-16 lg:py-20">
             {/* 메인 타이틀 */}
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 drop-shadow-lg">
-              신선한 식자재
+            <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-8 md:mb-10 lg:mb-12 drop-shadow-lg leading-tight">
+              매장에서 시작되는<br className="md:hidden" />
+              <span className="block md:inline"> </span>오늘의 밥상
             </h1>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-white mb-4 drop-shadow-lg">
-              공동구매로 더 합리적으로
-            </h2>
 
-            {/* 서브 타이틀 */}
-            <p className="text-lg md:text-xl text-white/90 mb-12 max-w-2xl mx-auto drop-shadow-md">
-              실제 매장에서 바로 가져온 신선한 농산물과 식자재를
-              <br className="hidden md:block" />
-              공동구매로 더 저렴하게 만나보세요
+            {/* 서브 카피 */}
+            <p className="text-base md:text-lg lg:text-xl text-white/90 mb-10 md:mb-14 lg:mb-16 max-w-2xl mx-auto drop-shadow-md leading-relaxed px-4">
+              척척밥상 매장에서 직접 선별한 신선한 식자재를<br className="hidden sm:block" />
+              공동구매로 합리적으로 담아보세요.
             </p>
 
-            {/* CTA 버튼 그룹 */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            {/* CTA 버튼 */}
+            <div className="flex justify-center items-center mb-16 md:mb-20 lg:mb-24">
               <Button href="/products" asLink variant="primary" size="lg">
-                공동구매 상품 보기
-              </Button>
-              <Button href="/products" asLink variant="secondary" size="lg">
-                오늘의 특가
+                공동구매 참여하기
               </Button>
             </div>
 
             {/* 신뢰 요소 */}
-            <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-              <TrustCard title="100%" description="실제 매장 물량" />
-              <TrustCard title="당일" description="근거리 공급" />
-              <TrustCard title="신선" description="농산물 보장" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto">
+              <TrustCard title="신선함 척척" description="산지 신선 과일 & 먹거리" />
+              <TrustCard title="24시간" description="언제나 열려 있는 쇼핑" />
+              <TrustCard title="함께 성장" description="지속 성장 & 신뢰 시스템" />
             </div>
           </div>
         </Container>

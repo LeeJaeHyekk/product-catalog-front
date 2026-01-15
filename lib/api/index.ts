@@ -5,9 +5,8 @@
 import 'server-only'
 
 import type { Product } from '../types'
-import type { ApiResponse } from '../types/api'
 import { API_URL } from '../constants'
-import { isApiResponse, isProductArray } from '../validation'
+import { isApiResponse, isApiResponseItem } from '../validation'
 import { ApiError, ValidationError } from '../errors'
 import { safeTrim } from '../utils'
 import { fetchWithRetry } from './fetch'
@@ -32,48 +31,54 @@ export async function fetchProducts(): Promise<Product[]> {
     }
     
     // 이미지 매칭: 모든 상품명에 대해 이미지 매칭 수행
-    const productNames = (data.content as ApiResponse['content'])
-      .map(item => safeTrim(item.name, ''))
-      .filter(name => name.length > 0)
+    // 타입 가드를 사용하여 안전하게 처리
+    const productNames = data.content
+      .filter(isApiResponseItem)
+      .map((item): string => {
+        return typeof item.name === 'string' ? safeTrim(item.name, '') : ''
+      })
+      .filter((name): name is string => name.length > 0)
     
     let imageMap: Map<string, string | null> | undefined
     try {
-      // 동적 import로 서버 전용 모듈 로드
+      // 동적 import로 서버 전용 모듈 로드 (2중 점검 사용)
       const imageModule = await import('../image/matcher')
-      imageMap = await imageModule.matchProductImages(productNames)
+      // matchProductImagesWithFallback 사용 (1차: 현재 로직, 2차: 라이브러리)
+      imageMap = await imageModule.matchProductImagesWithFallback(productNames)
     } catch (error) {
       // 이미지 매칭 실패해도 상품 데이터는 반환
       console.warn('Image matching failed, continuing without images:', error)
     }
     
-    // content 배열 검증
-    if (!isProductArray(data.content)) {
-      // 타입 가드 실패 시 수동 변환 시도
-      const products = await Promise.all(
-        data.content
-          .filter((item): item is ApiResponse['content'][number] => {
-            return (
-              typeof item === 'object' &&
-              item !== null &&
-              'index' in item &&
-              'name' in item &&
-              'price' in item &&
-              'current' in item &&
-              'limit' in item
-            )
-          })
-          .map(item => mapToProduct(item, imageMap))
-      )
-      
-      if (products.length === 0) {
-        throw new ValidationError('유효한 상품 데이터가 없습니다.')
-      }
-      
-      return products
+    // content 배열 검증 및 변환
+    // 타입 가드를 사용하여 안전하게 처리
+    const validItems = data.content.filter(isApiResponseItem)
+    
+    if (validItems.length === 0) {
+      throw new ValidationError('유효한 상품 데이터가 없습니다.')
     }
     
-    // 타입 가드 통과 시 직접 변환
-    return Promise.all(data.content.map(item => mapToProduct(item, imageMap)))
+    // 타입 가드 통과한 아이템만 변환
+    // 안전성: Promise.all에서 일부 실패해도 계속 진행하도록 처리
+    const productPromises = validItems.map(async (item) => {
+      try {
+        return await mapToProduct(item, imageMap)
+      } catch (error) {
+        // 개별 상품 변환 실패 시 로깅하고 기본값 반환
+        console.error(`Failed to map product "${item.name}":`, error)
+        // 기본 상품 반환 (이미지만 null)
+        return {
+          index: typeof item.index === 'number' ? Math.max(0, Math.min(49, item.index)) : 0,
+          name: safeTrim(item.name, '상품명 없음'),
+          price: typeof item.price === 'number' && isFinite(item.price) ? Math.max(0, item.price) : 0,
+          current: typeof item.current === 'number' && isFinite(item.current) ? Math.max(0, item.current) : 0,
+          limit: typeof item.limit === 'number' && isFinite(item.limit) ? Math.max(1, item.limit) : 1,
+          image: null,
+        }
+      }
+    })
+    
+    return Promise.all(productPromises)
   } catch (error) {
     // 이미 AppError인 경우 그대로 재던지기
     if (error instanceof ApiError || error instanceof ValidationError) {

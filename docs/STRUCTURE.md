@@ -6,6 +6,8 @@
 docs/
 ├── README.md                    # 메인 문서 인덱스
 ├── STRUCTURE.md                 # 이 파일 (구조 가이드)
+├── CHANGELOG.md                 # 변경 이력
+├── assignment-compliance-analysis.md  # 과제 요구사항 준수 분석
 │
 ├── architecture/                # 아키텍처
 │   ├── README.md
@@ -28,8 +30,9 @@ docs/
 │   │
 │   ├── features/                # 기능
 │   │   ├── README.md
+│   │   ├── type-guards.md       # 타입 가드 (통합)
+│   │   ├── error-pages.md       # 에러 페이지 (통합)
 │   │   ├── loading-spinner.md
-│   │   ├── type-guards.md
 │   │   ├── stability-improvements.md
 │   │   ├── image-matching.md
 │   │   ├── category-filter-search.md
@@ -42,16 +45,19 @@ docs/
 │   ├── optimization/            # 최적화
 │   │   ├── README.md
 │   │   ├── rendering-performance.md
+│   │   ├── performance-analysis.md
 │   │   └── image-optimization-strategy.md
 │   │
 │   └── analysis/                # 분석
 │       ├── README.md
+│       ├── code-review.md       # 코드 리뷰 (통합)
 │       └── esm-functional-analysis.md
 │
-└── troubleshooting/             # 문제 해결
+└── troubleshooting/             # 문제 해결 및 원인 분석
     ├── README.md
     ├── hydration-error.md
-    └── error-architecture.md
+    ├── error-architecture.md
+    └── chunk-load-error-solution.md
 ```
 
 ## 대분류 설명
@@ -66,7 +72,7 @@ docs/
 기능 구현, 최적화, 코드 분석
 
 ### Troubleshooting (문제 해결)
-에러 해결, 문제 진단, 개발 히스토리
+에러 해결, 원인 분석, 개발 히스토리
 
 ## 소분류 설명
 
@@ -85,21 +91,25 @@ docs/
 
 ### 통합된 문서
 
-1. **modularization.md + modularization-complete.md**
-   - → `architecture/modularization.md` (통합)
+1. **타입 가드 관련 문서 통합**
+   - `type-guards.md` + `type-guard-safety-analysis.md`
+   - → `features/type-guards.md` (통합)
 
-2. **hydration-error.md + solution-summary.md**
-   - → `troubleshooting/hydration-error.md` (통합)
+2. **에러 페이지 관련 문서 통합**
+   - `error-pages-overview.md` + `dynamic-error-pages.md`
+   - → `features/error-pages.md` (통합)
 
-3. **feedback-analysis.md + streaming-suspense-strategy.md**
-   - → `development/optimization/rendering-performance.md` (통합)
+3. **코드 리뷰 관련 문서 통합**
+   - `final-code-review.md` + `final-code-review-summary.md`
+   - → `analysis/code-review.md` (통합)
 
 ### 삭제된 문서
 
-- `architecture/modularization-complete.md` (중복)
-- `troubleshooting/solution-summary.md` (중복)
-- `development/optimization/feedback-analysis.md` (중복)
-- `development/optimization/streaming-suspense-strategy.md` (중복)
+- `development/features/type-guard-safety-analysis.md` (중복)
+- `development/features/dynamic-error-pages.md` (중복)
+- `development/features/error-pages-overview.md` (중복)
+- `development/analysis/final-code-review.md` (중복)
+- `development/analysis/final-code-review-summary.md` (중복)
 
 ## 히스토리 섹션
 
@@ -140,7 +150,7 @@ docs/
 ## 히스토리
 
 ### YYYY-MM-DD: 이벤트 제목
-- **목표/문제**: 무엇을 해결하려 했는가
+- **목표/고려사항**: 무엇을 해결하려 했는가
 - **구현/해결**: 어떻게 해결했는가
 - **효과**: 어떤 결과가 있었는가
 ```
@@ -158,6 +168,9 @@ docs/
 
 ### 성능 최적화 관련
 → `docs/development/optimization/`
+
+### 코드 분석 관련
+→ `docs/development/analysis/`
 
 ### 에러 해결 관련
 → `docs/troubleshooting/`

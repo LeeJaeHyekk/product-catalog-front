@@ -250,7 +250,7 @@ export async function GET(request: Request) {
 
 ### 효율적인 데이터 흐름
 
-**추천 구조:**
+**구조 예시:**
 ```
 서버 컴포넌트: API 호출 → 즉시 가공 (카테고리 포함) → 클라이언트 전달
 클라이언트 컴포넌트: 필터링만 수행 (useMemo 최적화)

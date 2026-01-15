@@ -28,7 +28,7 @@ interface ProductImageProps {
 export function ProductImage({ 
   src, 
   alt, 
-  productName,
+  productName: _productName, // 향후 사용을 위해 보관 (현재 미사용)
   priority = false 
 }: ProductImageProps) {
   const [imageError, setImageError] = useState(false)
@@ -66,7 +66,7 @@ export function ProductImage({
           src={imageSrc}
           alt={alt}
           fill
-          className={`object-cover transition-opacity duration-300 ${
+          className={`object-cover transition-opacity duration-500 ease-out ${
             imageLoading ? 'opacity-0' : 'opacity-100'
           }`}
           sizes={IMAGE_SIZES.RESPONSIVE}

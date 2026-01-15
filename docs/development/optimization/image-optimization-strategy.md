@@ -6,24 +6,24 @@ Next.js Image 컴포넌트의 최적화 전략에 대한 설계 문서입니다.
 
 ## 핵심 원칙
 
-### 피해야 할 방식
+### 지양하는 방식
 
 1. **네트워크/기기 기준 quality 자동 계산**
    ```typescript
-   // 비권장
+   // 지양
    const quality = isFastNetwork ? 85 : 65
    <Image quality={quality} />
    ```
 
 2. **랜덤/계산 기반 quality 값**
    ```typescript
-   // 비권장
+   // 지양
    const quality = Math.random() * 30 + 70
    ```
 
 3. **완전 동적 품질 조정**
 
-### 권장 방식
+### 적용 방식
 
 1. **quality는 제한된 enum으로 관리**
 2. **size, priority, lazy loading으로 체감 최적화**
@@ -44,11 +44,11 @@ Next.js Image 컴포넌트의 최적화 전략에 대한 설계 문서입니다.
 
 ### 3. 성능 안정성
 
-- 자동 품질은 평균은 좋아 보이지만 최악의 케이스 발생 가능
+- 자동 품질은 평균은 양호하지만 최악의 케이스 발생 가능
 - 느린 네트워크 + 고화질
 - 저사양 기기 + 큰 이미지
 
-## 권장되는 '시스템 친화적 동적 최적화' 방식
+## 시스템 친화적 동적 최적화 방식
 
 ### 1. quality는 고정, size를 동적으로
 

@@ -27,8 +27,13 @@ export async function mapToProduct(
     const productName = safeTrim(item.name, '상품명 없음')
     
     // 이미 매칭된 이미지 맵이 있으면 사용
-    if (imageMap && imageMap.has(productName)) {
-      image = imageMap.get(productName) || null
+    // 안전성: has 체크 후 get 사용하여 타입 안전성 보장
+    if (imageMap && typeof imageMap.has === 'function' && imageMap.has(productName)) {
+      const matchedImage = imageMap.get(productName)
+      // 안전성: get 결과가 유효한 문자열인지 확인
+      if (matchedImage !== null && matchedImage !== undefined && typeof matchedImage === 'string') {
+        image = matchedImage
+      }
     }
   }
   

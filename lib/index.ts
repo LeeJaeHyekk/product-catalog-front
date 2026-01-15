@@ -31,6 +31,7 @@ export {
   isProduct,
   isProductArray,
   isApiResponse,
+  isApiResponseItem,
 } from './validation'
 
 // 상수 export
@@ -46,11 +47,8 @@ export * from './hooks'
 export { STYLES } from './styles'
 
 // 상품 처리 함수 export (클라이언트/서버 모두 사용 가능)
+// 주의: 명시적 export는 product/index.ts에서 이미 export되므로 중복 제거
 export * from './product'
-
-// 카테고리 관련 export
-export type { EnrichedProduct, ProductCategoryInfo, FilterOptions } from './product'
-export { filterProducts, getAvailableSubCategories } from './product'
 
 // 이미지 관련 export (클라이언트/서버 공통)
 export { isOptimizableImage, getImageSrc, IMAGE_CONFIG } from './image/optimizer'

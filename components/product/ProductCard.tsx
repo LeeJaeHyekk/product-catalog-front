@@ -88,29 +88,34 @@ function ProductCardComponent({ product }: ProductCardProps) {
         </p>
         
         {/* 진행률 바 (2순위: 공동구매 핵심) */}
-        {!isSoldOut && (
-          <div className="mb-3">
-            {/* 진행률 바 */}
-            <div
-              role="progressbar"
-              aria-valuenow={current}
-              aria-valuemin={0}
-              aria-valuemax={limit}
-              aria-label={`진행률 ${Math.round(progressPercentage)}%`}
-              className={STYLES.progressBar}
-            >
+        <div className="mb-3 min-h-[44px]">
+          {!isSoldOut ? (
+            <>
+              {/* 진행률 바 */}
               <div
-                className={progressBarClassName}
-                style={{ width: `${progressPercentage}%` }}
-              />
-            </div>
-            
-            {/* 수량 정보 (3순위) */}
-            <p className={STYLES.progressText}>
-              잔여 {remaining} / {limit}
-            </p>
-          </div>
-        )}
+                role="progressbar"
+                aria-valuenow={current}
+                aria-valuemin={0}
+                aria-valuemax={limit}
+                aria-label={`진행률 ${Math.round(progressPercentage)}%`}
+                className={STYLES.progressBar}
+              >
+                <div
+                  className={progressBarClassName}
+                  style={{ width: `${progressPercentage}%` }}
+                />
+              </div>
+              
+              {/* 수량 정보 (3순위) */}
+              <p className={STYLES.progressText}>
+                잔여 {remaining} / {limit}
+              </p>
+            </>
+          ) : (
+            /* 품절 시 공간 확보를 위한 placeholder */
+            <div className="h-2 mb-2" aria-hidden="true" />
+          )}
+        </div>
         
         {/* 버튼 */}
         <button 

@@ -58,10 +58,19 @@ export function useProductFilters({
   // 안전성: initialFilters 검증
   const validatedInitialFilters: Partial<FilterOptions> = {}
   if (initialFilters && typeof initialFilters === 'object') {
-    if (initialFilters.subCategoryId !== undefined && 
-        initialFilters.subCategoryId !== null && 
-        (typeof initialFilters.subCategoryId === 'string' || initialFilters.subCategoryId === '전체')) {
-      validatedInitialFilters.subCategoryId = initialFilters.subCategoryId as string | '전체'
+    // 타입 가드 함수로 안전하게 검증
+    const isValidSubCategoryId = (
+      value: unknown
+    ): value is string | '전체' => {
+      return (
+        value !== undefined &&
+        value !== null &&
+        (typeof value === 'string' || value === '전체')
+      )
+    }
+    
+    if (isValidSubCategoryId(initialFilters.subCategoryId)) {
+      validatedInitialFilters.subCategoryId = initialFilters.subCategoryId
     }
     if (initialFilters.searchQuery !== undefined && 
         initialFilters.searchQuery !== null && 

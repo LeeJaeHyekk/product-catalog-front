@@ -3,10 +3,13 @@
  */
 
 import type { Product } from '../types'
+import { PRODUCT_INDEX_MIN, PRODUCT_INDEX_MAX } from '../constants/product'
 import { isNotNull } from '../validation'
 
 /**
  * 상품이 유효한지 검증
+ * 
+ * 과제 요구사항: index는 0~49 범위
  */
 export function isValidProduct(product: unknown): product is Product {
   if (typeof product !== 'object' || product === null) {
@@ -17,7 +20,8 @@ export function isValidProduct(product: unknown): product is Product {
 
   return (
     typeof p.index === 'number' &&
-    p.index >= 0 &&
+    p.index >= PRODUCT_INDEX_MIN &&
+    p.index <= PRODUCT_INDEX_MAX &&
     typeof p.name === 'string' &&
     p.name.length > 0 &&
     typeof p.price === 'number' &&
@@ -25,7 +29,8 @@ export function isValidProduct(product: unknown): product is Product {
     typeof p.current === 'number' &&
     p.current >= 0 &&
     typeof p.limit === 'number' &&
-    p.limit > 0
+    p.limit > 0 &&
+    (p.image === null || typeof p.image === 'string')
   )
 }
 

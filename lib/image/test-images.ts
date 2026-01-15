@@ -24,7 +24,8 @@ export const TEST_IMAGE_URLS = [
  * 랜덤 이미지 URL 반환
  */
 export function getRandomTestImage(): string {
-  return TEST_IMAGE_URLS[Math.floor(Math.random() * TEST_IMAGE_URLS.length)]
+  const randomIndex = Math.floor(Math.random() * TEST_IMAGE_URLS.length)
+  return TEST_IMAGE_URLS[randomIndex] ?? TEST_IMAGE_URLS[0] ?? ''
 }
 
 /**

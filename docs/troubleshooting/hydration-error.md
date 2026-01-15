@@ -1,6 +1,6 @@
 # Hydration Error 해결 가이드
 
-## 문제 발생 원인
+## 원인 분석
 
 ### 1. 서버-클라이언트 데이터 불일치
 
@@ -21,7 +21,7 @@ Hydration failed because the server rendered text didn't match the client.
    - 클라이언트에서 하이드레이션 시 다른 캐시 상태
    - 서버와 클라이언트의 QueryClient 인스턴스가 분리됨
 
-3. **Suspense 경계 문제**
+3. **Suspense 경계**
    - 서버 컴포넌트에서 Suspense 사용
    - 클라이언트 컴포넌트에서 동일한 Suspense 사용
    - 서로 다른 시점에 데이터를 받아서 불일치 발생
@@ -86,7 +86,7 @@ export default function ProductsPage() {
 }
 ```
 
-### 방법 3: suppressHydrationWarning (임시방편, 비권장)
+### 방법 3: suppressHydrationWarning (임시방편)
 
 **주의:** 이 방법은 근본적인 해결책이 아닙니다.
 

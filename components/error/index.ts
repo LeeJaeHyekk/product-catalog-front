@@ -2,3 +2,4 @@
 export { ErrorFallback } from './ErrorFallback'
 export { ErrorMessage } from './ErrorMessage'
 export { ErrorActions } from './ErrorActions'
+export { DynamicErrorPage } from './DynamicErrorPage'

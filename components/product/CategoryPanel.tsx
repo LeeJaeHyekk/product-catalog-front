@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, useRef, useEffect, useMemo } from 'react'
+import { useState, useRef } from 'react'
 import type { EnrichedProduct } from '@/lib/product'
-import { getAvailableSubCategories } from '@/lib/product'
 import { COLORS } from '@/lib/constants'
-import { useMemoClassName } from '@/lib/hooks'
+import { useMemoClassName, useClickOutside, useEscapeKey, useCategorySelection } from '@/lib/hooks'
 import { isArray } from '@/lib/validation'
+import { CategoryButton } from './CategoryButton'
 
 interface CategoryPanelProps {
   /** 상품 목록 (카테고리 정보 포함) */
@@ -34,66 +34,27 @@ export function CategoryPanel({
   }
 
   const [isOpen, setIsOpen] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
   const panelRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
 
-  // 사용 가능한 카테고리 목록 (실제 상품에 존재하는 것만)
-  const availableCategories = useMemo(() => {
-    try {
-      return getAvailableSubCategories(products)
-    } catch (error) {
-      console.error('CategoryPanel: Failed to get available categories', error)
-      return []
-    }
-  }, [products])
+  // 카테고리 선택 로직 (모듈화된 훅 사용)
+  const { availableCategories, selectedCategoryName, selectedCategoryCount } = useCategorySelection({
+    products,
+    selectedSubCategoryId,
+  })
 
-  // 선택된 카테고리 이름 찾기
-  const selectedCategoryName = useMemo(() => {
-    if (selectedSubCategoryId === '전체') {
-      return '전체'
-    }
-    const category = availableCategories.find(cat => cat.id === selectedSubCategoryId)
-    return category?.name || '전체'
-  }, [selectedSubCategoryId, availableCategories])
+  // 외부 클릭 시 패널 닫기 (컨테이너 전체를 감지하여 버튼과 패널 모두 포함)
+  useClickOutside(containerRef, {
+    handler: () => setIsOpen(false),
+    enabled: isOpen,
+  })
 
-  // 외부 클릭 시 패널 닫기
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        panelRef.current &&
-        buttonRef.current &&
-        !panelRef.current.contains(event.target as Node) &&
-        !buttonRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false)
-      }
-    }
-
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside)
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [isOpen])
-
-  // ESC 키로 닫기
-  useEffect(() => {
-    function handleEscape(event: KeyboardEvent) {
-      if (event.key === 'Escape' && isOpen) {
-        setIsOpen(false)
-      }
-    }
-
-    if (isOpen) {
-      document.addEventListener('keydown', handleEscape)
-    }
-
-    return () => {
-      document.removeEventListener('keydown', handleEscape)
-    }
-  }, [isOpen])
+  // ESC 키로 닫기 (모듈화된 훅 사용)
+  useEscapeKey({
+    handler: () => setIsOpen(false),
+    enabled: isOpen,
+  })
 
 
   const togglePanel = () => {
@@ -117,8 +78,13 @@ export function CategoryPanel({
         }
       }
       
+      // 필터 업데이트
       onCategoryChange(subCategoryId)
-      setIsOpen(false)
+      
+      // 패널 닫기는 약간의 지연을 두어 클릭 이벤트가 완전히 처리되도록 함
+      setTimeout(() => {
+        setIsOpen(false)
+      }, 0)
     } catch (error) {
       console.error('CategoryPanel: Error in handleCategorySelect', error)
       // 에러 발생 시에도 패널은 닫기
@@ -140,21 +106,9 @@ export function CategoryPanel({
     }
   )
 
-  // 배지 클래스명 (상태값에 따라 조건부 스타일 적용)
-  const badgeClassName = useMemo(() => {
-    const baseClasses = 'px-2 py-0.5 rounded-full text-xs font-medium'
-    
-    // 버튼이 활성화된 상태(녹색 배경)일 때: 흰색 배지
-    if (isOpen || hasSelectedCategory) {
-      return `${baseClasses} bg-white/25 text-white`
-    }
-    
-    // 버튼이 비활성화된 상태일 때: 녹색 배지
-    return `${baseClasses} bg-[#1E7F4F]/15 text-[#1E7F4F]`
-  }, [isOpen, hasSelectedCategory])
 
   return (
-    <div className="relative z-50">
+    <div ref={containerRef} className="relative z-50">
       {/* 카테고리 버튼 */}
       <button
         ref={buttonRef}
@@ -191,24 +145,24 @@ export function CategoryPanel({
         
         {/* 선택된 카테고리가 있으면 배지 표시 */}
         {hasSelectedCategory && (
-          <span className={badgeClassName}>
-            {availableCategories.find(cat => cat.id === selectedSubCategoryId)?.count || 0}
+          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+            isOpen || hasSelectedCategory
+              ? 'bg-white/25 text-white'
+              : `${COLORS.primary.bgWithOpacity(15)} ${COLORS.primary.text}`
+          }`}>
+            {selectedCategoryCount}
           </span>
         )}
       </button>
 
       {/* 슬라이드 다운 패널 */}
+      {isOpen && (
       <div
         ref={panelRef}
-        className={`absolute top-full right-0 mt-2 w-[90vw] sm:w-[500px] md:w-[600px] max-h-[70vh] overflow-y-auto bg-white backdrop-blur-md shadow-2xl rounded-2xl border border-gray-200/60 transition-all duration-300 ease-out ${
-          isOpen
-            ? 'translate-y-0 opacity-100 pointer-events-auto'
-            : '-translate-y-4 opacity-0 pointer-events-none'
-        }`}
+        className="absolute top-full right-0 mt-2 w-[90vw] sm:w-[500px] md:w-[600px] max-h-[70vh] overflow-y-auto bg-white backdrop-blur-md shadow-2xl rounded-2xl border border-gray-200/60 transition-all duration-300 ease-out translate-y-0 opacity-100 pointer-events-auto"
         style={{
           zIndex: 9999,
           minWidth: '320px',
-          display: isOpen ? 'block' : 'none',
         }}
       >
         <div className="p-5">
@@ -243,7 +197,7 @@ export function CategoryPanel({
             <button
               type="button"
               onClick={() => setIsOpen(false)}
-              className={`p-1.5 rounded-lg ${COLORS.text.secondaryClass} hover:${COLORS.primary.text} hover:bg-[#1E7F4F]/10 transition-all duration-200`}
+              className={`p-1.5 rounded-lg ${COLORS.text.secondaryClass} hover:${COLORS.primary.text} hover:bg-[#1E7F4F]/10 transition-all duration-300 ease-out`}
               aria-label="닫기"
             >
               <svg
@@ -266,25 +220,14 @@ export function CategoryPanel({
           {/* 카테고리 그리드 */}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
             {/* 전체 버튼 */}
-            <button
+            <CategoryButton
+              id="전체"
+              name="전체"
+              count={Array.isArray(products) ? products.length : 0}
+              isSelected={selectedSubCategoryId === '전체'}
               onClick={() => handleCategorySelect('전체')}
-              className={`group relative px-4 py-3 rounded-xl font-semibold text-sm transition-all duration-300 text-left border-2 transform hover:scale-105 active:scale-95 ${
-                selectedSubCategoryId === '전체'
-                  ? `${COLORS.primary.bg} text-white border-[#1E7F4F] shadow-lg shadow-[#1E7F4F]/25`
-                  : `${COLORS.background.bgMain} ${COLORS.text.primaryClass} border-gray-200/60 hover:border-[#1E7F4F]/40 hover:${COLORS.primary.bgWithOpacity(10)} shadow-sm hover:shadow-md`
-              }`}
-            >
-              <div className="flex items-center justify-between gap-2">
-                <span className="font-bold text-xs sm:text-sm">전체</span>
-                <span className={`px-2 py-0.5 rounded-full text-xs font-bold flex-shrink-0 ${
-                  selectedSubCategoryId === '전체'
-                    ? 'bg-white/30 text-white'
-                    : `${COLORS.primary.bgWithOpacity(15)} ${COLORS.primary.text}`
-                }`}>
-                  {Array.isArray(products) ? products.length : 0}
-                </span>
-              </div>
-            </button>
+              variant="grid"
+            />
 
             {/* 카테고리 버튼들 */}
             {availableCategories.length === 0 ? (
@@ -303,32 +246,22 @@ export function CategoryPanel({
                 const validCount = typeof count === 'number' && count >= 0 && isFinite(count) ? count : 0
                 
                 return (
-                  <button
+                  <CategoryButton
                     key={id}
+                    id={id}
+                    name={name}
+                    count={validCount}
+                    isSelected={selectedSubCategoryId === id}
                     onClick={() => handleCategorySelect(id)}
-                    className={`group relative px-4 py-3 rounded-xl font-semibold text-sm transition-all duration-300 text-left border-2 transform hover:scale-105 active:scale-95 ${
-                      selectedSubCategoryId === id
-                        ? `${COLORS.primary.bg} text-white border-[#1E7F4F] shadow-lg shadow-[#1E7F4F]/25`
-                        : `${COLORS.background.bgMain} ${COLORS.text.primaryClass} border-gray-200/60 hover:border-[#1E7F4F]/40 hover:${COLORS.primary.bgWithOpacity(10)} shadow-sm hover:shadow-md`
-                    }`}
-                  >
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="font-bold text-xs sm:text-sm truncate">{name}</span>
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-bold flex-shrink-0 ${
-                        selectedSubCategoryId === id
-                          ? 'bg-white/30 text-white'
-                          : `${COLORS.primary.bgWithOpacity(15)} ${COLORS.primary.text}`
-                      }`}>
-                        {validCount}
-                      </span>
-                    </div>
-                  </button>
+                    variant="grid"
+                  />
                 )
               })
             )}
           </div>
         </div>
       </div>
+      )}
     </div>
   )
 }

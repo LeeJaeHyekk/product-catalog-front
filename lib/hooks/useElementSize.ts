@@ -6,7 +6,7 @@
  * DOM 요소의 크기를 측정하고 변경을 감지하는 훅
  */
 
-import { useState, useEffect, useRef, RefObject } from 'react'
+import { useState, useEffect, RefObject } from 'react'
 import { getElementWidth } from '../utils/layout'
 
 /**

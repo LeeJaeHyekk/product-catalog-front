@@ -1,17 +1,17 @@
 # 프로젝트 문서
 
-이 디렉토리는 프로젝트의 모든 문서를 체계적으로 정리합니다.
+본 디렉토리는 프로젝트의 모든 문서를 체계적으로 정리한 것입니다.
 
 ## 문서 구조
 
 ### [Architecture (아키텍처)](./architecture/README.md)
-프로젝트의 구조, 모듈화, 설계 원칙에 대한 문서
+프로젝트의 구조, 모듈화, 설계 원칙에 대한 문서입니다.
 
 - **모듈화**: 기능별 모듈 구조 및 중복 제거 전략
 - **모듈 구조**: 모듈별 책임 및 사용 가이드
 
 ### [Design (디자인)](./design/README.md)
-디자인 시스템, 브랜드 정체성, UI/UX 가이드
+디자인 시스템, 브랜드 정체성, UI/UX 가이드입니다.
 
 - **브랜드 정체성**: 브랜드 이미지 및 디자인 방향
 - **디자인 토큰**: 색상, 타이포그래피, 간격 등 디자인 시스템
@@ -20,27 +20,30 @@
 - **성능 UX**: 대용량 데이터 대응 및 성능 개선 전략
 
 ### [Development (개발)](./development/README.md)
-기능 구현, 최적화, 코드 분석 문서
+기능 구현, 최적화, 코드 분석 문서입니다.
 
 #### Features (기능)
-- **로딩 스피너**: 로딩 상태 시각화 컴포넌트
 - **타입 가드**: 런타임 타입 검증 시스템
+- **에러 페이지**: 동적 에러 페이지 시스템
+- **로딩 스피너**: 로딩 상태 시각화 컴포넌트
 - **안정성 향상**: 안정성을 높이는 알고리즘 및 방식
 - **이미지 매칭**: 상품명과 이미지 파일명 자동 매칭
+- **카테고리 분류 및 검색/필터**: 카테고리 기반 분류 및 검색 기능
 
 #### Optimization (최적화)
-- **Streaming + Suspense**: API 지연 상황에서 체감 렌더링 시간 개선
-- **이미지 최적화**: Next.js Image 최적화 전략 (quality, size, priority)
+- **렌더링 성능**: API 지연 상황에서 체감 렌더링 시간 개선
+- **이미지 최적화**: Next.js Image 최적화 전략
 
 #### Analysis (분석)
+- **코드 리뷰**: 최종 코드 리뷰 및 개선 사항
 - **ESM & 함수형**: ESM 문법 및 함수형 프로그래밍 패러다임 준수 분석
 
 ### [Troubleshooting (문제 해결)](./troubleshooting/README.md)
-에러 해결, 문제 진단, 개발 히스토리
+에러 해결, 원인 분석, 개발 히스토리입니다.
 
 - **Hydration Error**: 서버-클라이언트 불일치 해결
 - **에러 아키텍처**: 타입 기반 에러 처리 및 Error Boundary 구조
-- **개발 히스토리**: 주요 개발 과정 및 결정 사항
+- **Chunk Load Error**: 모듈 로딩 오류 해결
 
 ## 빠른 링크
 
@@ -48,6 +51,7 @@
 - [프로젝트 개요](../README.md)
 - [아키텍처 개요](./architecture/README.md)
 - [디자인 시스템](./design/README.md)
+- [과제 요구사항 준수 분석](./assignment-compliance-analysis.md)
 
 ### 개발 가이드
 - [기능 구현 가이드](./development/README.md)
@@ -57,6 +61,7 @@
 ### 문제 해결
 - [Hydration Error 해결](./troubleshooting/hydration-error.md)
 - [에러 아키텍처](./troubleshooting/error-architecture.md)
+- [Chunk Load Error 해결](./troubleshooting/chunk-load-error-solution.md)
 
 ## 문서 작성 가이드
 
@@ -72,11 +77,9 @@
 ```markdown
 ## 히스토리
 
-### 2026-01-XX: 초기 발생
-- 문제 발생 및 원인 분석
+### YYYY-MM-DD: 이벤트 제목
+- 원인 분석 및 해결 과정
 - 해결 과정
-
-### 2026-01-XX: 개선
 - 추가 개선 사항
 ```
 

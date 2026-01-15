@@ -208,7 +208,7 @@ const soldOut = sortProducts(mapped.filter(p => p.isSoldOut))
 
 ## 사용 방법
 
-### 통합 Import (권장)
+### 통합 Import
 
 ```typescript
 // 클라이언트/서버 공통

@@ -127,7 +127,7 @@ lib/
 
 ## Import 가이드
 
-### 통합 Import (권장)
+### 통합 Import
 ```typescript
 import { 
   Product, 

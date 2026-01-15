@@ -13,7 +13,7 @@
 
 ### 1.1 설정 파일 확인
 
-#### ✅ package.json
+#### package.json
 ```json
 {
   "type": "module",  // ✅ ESM 모듈 시스템 명시
@@ -21,7 +21,7 @@
 }
 ```
 
-#### ✅ tsconfig.json
+#### tsconfig.json
 ```json
 {
   "compilerOptions": {
@@ -34,7 +34,7 @@
 
 ### 1.2 코드 파일 분석
 
-#### ✅ Import 문법 사용
+#### Import 문법 사용
 - **확인된 파일 수**: 전체 파일
 - **사용 패턴**: `import ... from '...'`
 - **예시**:
@@ -210,13 +210,13 @@ function createError(type: ErrorType, message: string) {
 
 ### 3.2 함수형 설계 준수
 
-**결과: ✅ 대부분 준수**
+**결과: 대부분 준수**
 
 **준수 사항:**
-- ✅ 모든 컴포넌트가 함수형 컴포넌트
-- ✅ 모든 유틸리티 함수가 순수 함수
-- ✅ 타입 가드가 함수 형태
-- ✅ 부수 효과 최소화
+- 모든 컴포넌트가 함수형 컴포넌트
+- 모든 유틸리티 함수가 순수 함수
+- 타입 가드가 함수 형태
+- 부수 효과 최소화
 
 **예외 사항:**
 - 에러 타입만 클래스 사용 (타입 구분을 위한 필수 사항)
@@ -262,7 +262,7 @@ function createError(type: ErrorType, message: string) {
    - **단점**: `instanceof` 사용 불가, 타입 구분이 덜 명확함
    - **결론**: 현재 클래스 방식이 더 나음
 
-2. **현재 구조 유지 권장**
+2. **현재 구조 유지**
    - 에러 클래스는 TypeScript/JavaScript 표준
    - Error Boundary와의 호환성 유지
    - 타입 구분이 명확함

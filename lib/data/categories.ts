@@ -5,9 +5,10 @@
  */
 
 import categoryData from './category.json'
-import type { CategoryRoot, FlatCategoryInfo, CategoryMatch } from '../types/category'
+import type { CategoryRoot, FlatCategoryInfo, Category } from '../types/category'
 import { getEnglishKeywords } from './english-keywords'
 import { ValidationError } from '../errors'
+import { isCategoryArray } from '../validation/guards'
 
 /**
  * 카테고리 데이터 타입 검증 및 로드
@@ -90,7 +91,23 @@ function loadCategoryData(): CategoryRoot {
     }
   }
 
-  return categoryData as CategoryRoot
+  // 모든 검증을 통과했으므로 타입 가드로 안전하게 변환
+  const validatedCategoryRoot: string = 
+    typeof categoryData.categoryRoot === 'string' 
+      ? categoryData.categoryRoot 
+      : ''
+  
+  // 타입 가드를 사용하여 안전하게 변환
+  const validatedCategories: readonly Category[] = 
+    isCategoryArray(categoryData.categories)
+      ? categoryData.categories
+      : []
+  
+  const validatedData: CategoryRoot = {
+    categoryRoot: validatedCategoryRoot,
+    categories: validatedCategories,
+  }
+  return validatedData
 }
 
 /**
@@ -125,14 +142,18 @@ function createFlatCategoryInfo(): FlatCategoryInfo[] {
 
       // 안정성: items가 유효한 배열인지 확인
       const koreanKeywords = Array.isArray(subCategory.items) 
-        ? subCategory.items.filter((item: unknown) => typeof item === 'string' && item.trim().length > 0)
+        ? subCategory.items.filter((item: unknown): item is string => 
+            typeof item === 'string' && item.trim().length > 0
+          )
         : []
 
       // 영어 키워드 매핑 생성
       // 1. category.json에 englishItems가 있으면 사용
       // 2. 없으면 english-keywords.ts의 매핑 테이블에서 자동 생성
       const englishKeywordsFromJson = Array.isArray(subCategory.englishItems)
-        ? subCategory.englishItems.filter((item: unknown) => typeof item === 'string' && item.trim().length > 0)
+        ? subCategory.englishItems.filter((item: unknown): item is string => 
+            typeof item === 'string' && item.trim().length > 0
+          )
         : []
       
       const englishKeywordsFromMap = koreanKeywords.flatMap((item: string) => {
@@ -146,7 +167,9 @@ function createFlatCategoryInfo(): FlatCategoryInfo[] {
       // 중복 제거 및 병합
       const englishKeywords = Array.from(
         new Set([...englishKeywordsFromJson, ...englishKeywordsFromMap])
-      ).filter((keyword: unknown) => typeof keyword === 'string' && keyword.trim().length > 0) as string[]
+      ).filter((keyword: unknown): keyword is string => 
+        typeof keyword === 'string' && keyword.trim().length > 0
+      )
 
       // 안정성: 키워드가 하나도 없으면 스킵하지 않음 (기타 카테고리 등)
       flatInfo.push({
@@ -178,13 +201,17 @@ export const CATEGORY_DATA = {
 
 /**
  * 모든 서브 카테고리 ID 목록
+ * 
+ * 타입 안전성: flatCategoryInfo의 subCategoryId는 이미 string 타입이므로 안전
  */
-export const SUB_CATEGORY_IDS = flatCategoryInfo.map(info => info.subCategoryId) as readonly string[]
+export const SUB_CATEGORY_IDS: readonly string[] = flatCategoryInfo.map(info => info.subCategoryId)
 
 /**
  * 모든 서브 카테고리 이름 목록
+ * 
+ * 타입 안전성: flatCategoryInfo의 subCategoryName은 이미 string 타입이므로 안전
  */
-export const SUB_CATEGORY_NAMES = flatCategoryInfo.map(info => info.subCategoryName) as readonly string[]
+export const SUB_CATEGORY_NAMES: readonly string[] = flatCategoryInfo.map(info => info.subCategoryName)
 
 /**
  * 서브 카테고리 ID로 정보 찾기

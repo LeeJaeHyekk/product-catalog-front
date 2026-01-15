@@ -3,13 +3,17 @@
  */
 
 // 서버 전용 (동적 import만 가능)
-export type { ImageFile, MatchResult } from './matcher'
+export type { ImageFile, MatchResult } from './types'
 export { 
   matchProductImage, 
-  matchProductImages, 
+  matchProductImages,
+  matchProductImageWithFallback,
+  matchProductImagesWithFallback
+} from './matcher'
+export { 
   getImageFiles, 
   clearImageCache 
-} from './matcher'
+} from './utils/file-reader'
 
 // 클라이언트/서버 공통
 export { isOptimizableImage, getImageSrc, IMAGE_CONFIG } from './optimizer'

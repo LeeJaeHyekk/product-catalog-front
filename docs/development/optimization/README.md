@@ -1,20 +1,32 @@
 # 최적화 문서
 
-이 디렉토리는 프로젝트의 성능 및 UX 최적화 전략을 문서화합니다.
+프로젝트의 성능 및 UX 최적화 전략을 문서화한 것입니다.
 
 ## 최적화 전략 목록
 
 ### 1. 렌더링 성능 최적화
-- **파일**: `rendering-performance.md`
+- **파일**: [rendering-performance.md](./rendering-performance.md)
 - **설명**: Streaming + Suspense 전략 및 컴포넌트 렌더링 최적화
 - **주요 내용**:
   - API 지연 상황에서 체감 렌더링 시간 최소화
   - React.memo를 활용한 리렌더링 방지
   - useMemo를 활용한 계산 최적화
 
-### 2. 이미지 최적화 전략
-- **파일**: `image-optimization-strategy.md`
+### 2. 성능 분석
+- **파일**: [performance-analysis.md](./performance-analysis.md)
+- **설명**: 렌더링 시간 분석 및 평가
+- **주요 내용**:
+  - 서버 렌더링 시간 분석
+  - 체감 렌더링 시간 평가
+  - 최적화 전략 적용 상태
+
+### 3. 이미지 최적화 전략
+- **파일**: [image-optimization-strategy.md](./image-optimization-strategy.md)
 - **설명**: Next.js Image 최적화 전략
+- **주요 내용**:
+  - 이미지 최적화 설정
+  - 이미지 로딩 전략
+  - 성능 개선 효과
 
 ## 핵심 원칙
 
@@ -57,3 +69,9 @@
 | React.memo 적용 | 구현됨 |
 | useMemo 최적화 | 구현됨 |
 | 불필요한 리렌더링 방지 | 구현됨 |
+
+## 빠른 링크
+
+- [렌더링 성능 최적화](./rendering-performance.md)
+- [성능 분석](./performance-analysis.md)
+- [이미지 최적화 전략](./image-optimization-strategy.md)

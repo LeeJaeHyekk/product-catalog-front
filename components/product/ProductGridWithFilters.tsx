@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import type { EnrichedProduct } from '@/lib/product'
 import { COLORS } from '@/lib/constants'
 import { useProductFilters } from '@/lib/hooks'
@@ -39,6 +40,17 @@ export function ProductGridWithFilters({ products }: ProductGridWithFiltersProps
   const { filters, updateFilter, filteredProducts } = useProductFilters({
     products,
   })
+
+  // 에러 페이지에서 전달된 검색어 처리
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const errorPageSearchQuery = sessionStorage.getItem('errorPageSearchQuery')
+      if (errorPageSearchQuery && !filters.searchQuery) {
+        updateFilter('searchQuery', errorPageSearchQuery)
+        sessionStorage.removeItem('errorPageSearchQuery')
+      }
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="space-y-6">
