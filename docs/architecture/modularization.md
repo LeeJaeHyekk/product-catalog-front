@@ -1,112 +1,159 @@
-# 모듈화 및 경로 최적화
+# 모듈화 가이드
 
-## 개선 목표
+## 개요
 
-1. 기능별 모듈화로 중복 및 재설정 최소화
-2. 페이지별 index 파일로 경로 최적화
-3. 공통 코드 추출 및 재사용성 향상
+프로젝트를 기능별로 모듈화하여 중복을 제거하고 유지보수성을 향상시켰습니다.
 
-## 구조 개선
-
-### 1. Index 파일 구조
-
-각 폴더에 `index.ts` 파일을 추가하여 경로를 최적화했습니다.
+## 새로운 구조
 
 ```
 lib/
-  ├─ index.ts          # 모든 lib export 통합
-  ├─ types.ts
-  ├─ guards.ts
-  ├─ api.ts
-  ├─ product.ts
-  ├─ constants.ts      # 공통 상수
-  ├─ utils.ts          # 공통 유틸리티
-  └─ styles.ts         # 공통 스타일
-
-components/
-  ├─ product/
-  │   └─ index.ts      # 상품 컴포넌트 export
-  ├─ ui/
-  │   └─ index.ts      # UI 컴포넌트 export
-  └─ layout/
-      └─ index.ts      # 레이아웃 컴포넌트 export
-
-hooks/
-  └─ index.ts          # hooks export
+├── api/                    # API 관련 (서버 전용)
+│   ├── fetch.ts           # Fetch 유틸리티 (타임아웃, 재시도)
+│   ├── mapper.ts          # API 응답 → 도메인 모델 변환
+│   └── index.ts           # API 모듈 통합 export
+│
+├── image/                  # 이미지 관련
+│   ├── matcher.ts         # 이미지 매칭 알고리즘 (서버 전용)
+│   ├── optimizer.ts       # 이미지 최적화 (클라이언트/서버 공통)
+│   ├── test-images.ts     # 테스트 이미지 (개발 환경)
+│   └── index.ts           # 이미지 모듈 통합 export
+│
+├── product/                # 상품 처리
+│   ├── process.ts         # 메인 처리 함수
+│   ├── normalize.ts       # 데이터 정규화
+│   ├── validate.ts        # 데이터 검증
+│   ├── derive.ts          # 파생 상태 계산
+│   ├── sort.ts            # 정렬 로직 (중복 제거)
+│   └── index.ts           # 상품 모듈 통합 export
+│
+├── validation/             # 검증 로직
+│   ├── guards.ts          # 타입 가드
+│   ├── api.ts             # API 응답 검증
+│   └── index.ts           # 검증 모듈 통합 export
+│
+├── utils/                  # 유틸리티 함수
+│   ├── string.ts          # 문자열 유틸리티
+│   ├── number.ts          # 숫자 유틸리티
+│   ├── product.ts          # 상품 관련 유틸리티
+│   └── index.ts           # 유틸리티 통합 export
+│
+├── constants/              # 상수 정의
+│   ├── api.ts             # API 관련 상수
+│   ├── product.ts         # 상품 관련 상수
+│   ├── cache.ts           # 캐시 관련 상수
+│   ├── ui.ts              # UI 관련 상수
+│   └── index.ts           # 상수 통합 export
+│
+├── types/                  # 타입 정의
+│   ├── product.ts         # 상품 타입
+│   ├── api.ts             # API 타입
+│   └── index.ts           # 타입 통합 export
+│
+├── errors/                 # 에러 타입 (기존 구조 유지)
+│   ├── AppError.ts
+│   ├── ApiError.ts
+│   ├── ValidationError.ts
+│   ├── NotFoundError.ts
+│   └── index.ts
+│
+├── styles.ts               # 스타일 정의 (기존 구조 유지)
+└── index.ts                # 라이브러리 통합 export
 ```
 
-### 2. 경로 최적화 예시
+## 주요 개선 사항
 
+### 1. 중복 제거
+
+#### 정렬 로직 통합
 **Before:**
-```ts
-import { ProductGrid } from '@/components/product/ProductGrid'
-import { Container } from '@/components/layout/Container'
-import { fetchProducts } from '@/lib/api'
-import { processProducts } from '@/lib/product'
-import { formatPrice } from '@/lib/utils'
+```typescript
+// processProducts 내부에 중복된 정렬 로직
+const available = mapped.filter(...).sort((a, b) => { /* 중복 코드 */ })
+const soldOut = mapped.filter(...).sort((a, b) => { /* 중복 코드 */ })
 ```
 
 **After:**
-```ts
-import { ProductGrid } from '@/components/product'
-import { Container } from '@/components/layout'
-import { fetchProducts, processProducts, formatPrice } from '@/lib'
+```typescript
+// lib/product/sort.ts - 공통 정렬 함수
+export function sortProducts(products: ProcessedProduct[]): ProcessedProduct[] {
+  return [...products].sort(compareProducts)
+}
+
+// processProducts에서 재사용
+const available = sortProducts(mapped.filter(p => !p.isSoldOut))
+const soldOut = sortProducts(mapped.filter(p => p.isSoldOut))
 ```
 
-## 공통 코드 추출
+#### 검증 로직 통합
+**Before:**
+- `lib/product.ts`에 검증 로직 포함
+- `lib/guards.ts`에 타입 가드 포함
+- 중복된 검증 로직
 
-### 1. 상수 분리 (`lib/constants.ts`)
+**After:**
+- `lib/product/validate.ts` - 상품 검증 전용
+- `lib/validation/guards.ts` - 범용 타입 가드
+- `lib/validation/api.ts` - API 응답 검증
 
-**추출된 상수:**
-- API 설정 (URL, 타임아웃, 재시도)
-- 캐시 설정 (staleTime, gcTime)
-- 상품 인덱스 범위
-- Skeleton 개수
-- Grid 컬럼 설정
+#### 데이터 정규화 분리
+**Before:**
+- `processProducts` 내부에 정규화 로직 포함
 
-**효과:**
-- 중앙 집중식 관리
-- 변경 시 한 곳만 수정
-- 타입 안전성 보장
+**After:**
+- `lib/product/normalize.ts` - 정규화 전용 모듈
+- 재사용 가능한 `normalizeProduct`, `normalizeProducts` 함수
 
-### 2. 유틸리티 함수 분리 (`lib/utils.ts`)
+#### 파생 상태 계산 분리
+**Before:**
+- `processProducts` 내부에 직접 계산
 
-**추출된 함수:**
-- `parsePrice`: price 값 변환
-- `formatPrice`: 원화 포맷팅
-- `createProductKey`: 상품 key 생성
-- `clamp`: 범위 제한
-- `safeTrim`: 안전한 문자열 trim
+**After:**
+- `lib/product/derive.ts` - 파생 상태 계산 전용
+- 재사용 가능한 `addDerivedState`, `addDerivedStates` 함수
 
-**효과:**
-- 재사용성 향상
-- 테스트 용이성
-- 일관된 동작 보장
+### 2. 기능별 모듈화
 
-### 3. 공통 스타일 분리 (`lib/styles.ts`)
+#### API 모듈 (`lib/api/`)
+- `fetch.ts`: Fetch 유틸리티 (타임아웃, 재시도)
+- `mapper.ts`: API 응답 → 도메인 모델 변환
+- `index.ts`: 통합 export
 
-**추출된 스타일:**
-- 상품 카드 스타일
-- 이미지 스타일
-- 버튼 스타일
-- 그리드 스타일
-- Skeleton 스타일
+#### 이미지 모듈 (`lib/image/`)
+- `matcher.ts`: 이미지 매칭 알고리즘 (서버 전용)
+- `optimizer.ts`: 이미지 최적화 (클라이언트/서버 공통)
+- `test-images.ts`: 테스트 이미지
+- `index.ts`: 통합 export
 
-**효과:**
-- 스타일 일관성 유지
-- 변경 시 한 곳만 수정
-- Tailwind 클래스 재사용
+#### 상품 처리 모듈 (`lib/product/`)
+- `process.ts`: 메인 처리 함수
+- `normalize.ts`: 데이터 정규화
+- `validate.ts`: 데이터 검증
+- `derive.ts`: 파생 상태 계산
+- `sort.ts`: 정렬 로직
+- `index.ts`: 통합 export
 
-### 4. 공통 컴포넌트 추출
+### 3. 타입 정의 통합
 
-**추출된 컴포넌트:**
-- `EmptyState`: 빈 상태 표시
-- `ErrorState`: 에러 상태 표시
+#### 도메인별 분리
+- `lib/types/product.ts`: 상품 관련 타입
+- `lib/types/api.ts`: API 관련 타입
+- `lib/types/index.ts`: 통합 export
 
-**효과:**
-- 중복 코드 제거
-- 일관된 UI/UX
-- 유지보수 용이
+### 4. 상수 정의 기능별 분리
+
+- `lib/constants/api.ts`: API 설정
+- `lib/constants/product.ts`: 상품 설정
+- `lib/constants/cache.ts`: 캐시 설정
+- `lib/constants/ui.ts`: UI 설정
+- `lib/constants/index.ts`: 통합 export
+
+### 5. 유틸리티 함수 카테고리별 분리
+
+- `lib/utils/string.ts`: 문자열 유틸리티
+- `lib/utils/number.ts`: 숫자 유틸리티
+- `lib/utils/product.ts`: 상품 관련 유틸리티
+- `lib/utils/index.ts`: 통합 export
 
 ## 모듈화 원칙
 
@@ -126,49 +173,70 @@ import { fetchProducts, processProducts, formatPrice } from '@/lib'
 - 새로운 기능 추가 시 기존 코드 영향 최소화
 - 모듈 간 결합도 낮음
 
-## 사용 예시
+## 사용 방법
 
-### Import 최적화
+### 통합 Import (권장)
 
-```ts
-// Before
-import { ProductGrid } from '@/components/product/ProductGrid'
-import { ProductCard } from '@/components/product/ProductCard'
-import { ProductSkeleton } from '@/components/product/ProductSkeleton'
+```typescript
+// 클라이언트/서버 공통
+import { 
+  Product, 
+  ProcessedProduct,
+  processProducts,
+  formatPrice,
+  STYLES,
+  SKELETON_COUNT
+} from '@/lib'
 
-// After
-import { ProductGrid, ProductCard, ProductSkeleton } from '@/components/product'
+// 서버 전용 (직접 import)
+import { fetchProducts } from '@/lib/api'
 ```
 
-### 상수 사용
+### 세부 모듈 Import (필요시)
 
-```ts
-// Before
-const timeout = 10000
-const maxRetries = 3
-
-// After
-import { API_TIMEOUT, MAX_RETRIES } from '@/lib'
+```typescript
+// 특정 모듈만 필요할 때
+import { sortProducts } from '@/lib/product/sort'
+import { normalizeProduct } from '@/lib/product/normalize'
+import { isValidProduct } from '@/lib/product/validate'
 ```
 
-### 유틸리티 사용
+## 장점
 
-```ts
-// Before
-const price = parseInt(item.price.replace(/[^0-9]/g, ''), 10)
+1. **중복 제거**: 정렬, 검증, 정규화 로직이 재사용 가능한 함수로 분리
+2. **명확한 책임**: 각 모듈이 단일 책임을 가짐
+3. **유지보수성**: 변경 시 해당 모듈만 수정하면 됨
+4. **테스트 용이성**: 작은 단위 함수로 테스트 가능
+5. **확장성**: 새로운 기능 추가 시 해당 모듈에만 추가
+6. **타입 안전성**: 타입 정의가 도메인별로 명확히 분리
 
-// After
-import { parsePrice } from '@/lib'
-const price = parsePrice(item.price)
+## 마이그레이션 가이드
+
+기존 코드는 `@/lib`에서 통합 export를 통해 자동으로 호환됩니다.
+
+**변경 불필요:**
+```typescript
+import { formatPrice, STYLES } from '@/lib' // ✅ 그대로 작동
 ```
 
-## 장점 요약
+**변경 필요:**
+```typescript
+// Before
+import { fetchProducts } from '@/lib/api' // ❌ 이제는 직접 import
 
-| 항목 | 효과 |
-|------|------|
-| **경로 단순화** | import 경로가 짧아지고 명확해짐 |
-| **중복 제거** | 공통 코드 재사용으로 중복 최소화 |
-| **유지보수성** | 변경 시 한 곳만 수정 |
-| **타입 안전성** | 상수와 유틸리티로 타입 보장 |
-| **테스트 용이성** | 모듈별 독립적 테스트 가능 |
-| **확장성** | 새로운 기능 추가 용이 |
+// After
+import { fetchProducts } from '@/lib/api' // ✅ 서버 전용 직접 import
+```
+
+## 히스토리
+
+### 2024-01-XX: 초기 모듈화
+- 기능별 모듈 구조 설계
+- 중복 코드 제거 시작
+- 경로 최적화 (index.ts 파일 추가)
+
+### 2024-01-XX: 완전 모듈화
+- 모든 기능별 모듈 분리 완료
+- 정렬, 검증, 정규화 로직 통합
+- 타입 및 상수 정의 통합
+- 모듈별 책임 명확화

@@ -1,6 +1,9 @@
 // 상품 카드 컴포넌트
 export { ProductCard } from './ProductCard'
 
+// 상품 이미지 컴포넌트
+export { ProductImage } from './ProductImage'
+
 // 상품 그리드 컴포넌트
 export { ProductGrid } from './ProductGrid'
 

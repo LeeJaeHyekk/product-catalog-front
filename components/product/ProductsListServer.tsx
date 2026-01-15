@@ -1,5 +1,6 @@
 import { ProductGrid } from './ProductGrid'
-import { fetchProducts, processProducts } from '@/lib'
+import { fetchProducts } from '@/lib/api' // 서버 전용 직접 import
+import { processProducts } from '@/lib/product' // 상품 처리 모듈
 import { NotFoundError } from '@/lib/errors'
 
 /**

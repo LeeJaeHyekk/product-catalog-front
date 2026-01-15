@@ -2,7 +2,7 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useState, type ReactNode } from 'react'
-import { STALE_TIME, MAX_RETRIES } from '@/lib/constants'
+import { STALE_TIME, MAX_RETRIES } from '@/lib'
 
 function createQueryClient() {
   return new QueryClient({

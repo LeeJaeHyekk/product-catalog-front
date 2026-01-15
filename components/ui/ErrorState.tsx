@@ -13,15 +13,17 @@ export function ErrorState({
 }: ErrorStateProps) {
   return (
     <div className="error-state text-center py-12">
-      <h2 className="text-xl font-bold mb-4">{title}</h2>
-      <p className="text-gray-500 mb-4">{message}</p>
+      <h2 className="text-xl md:text-2xl font-bold mb-4 text-[#1F2933]">
+        {title}
+      </h2>
+      <p className="text-base text-[#6B7280] mb-4">{message}</p>
       {subMessage && (
-        <p className="text-gray-400 text-sm mb-4">{subMessage}</p>
+        <p className="text-sm text-[#9CA3AF] mb-4">{subMessage}</p>
       )}
       {onRetry && (
         <button
           onClick={onRetry}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          className="bg-[#1E7F4F] text-white px-6 py-2 rounded font-semibold hover:bg-[#2E9F6B] transition-colors focus:outline-none focus:ring-2 focus:ring-[#1E7F4F] focus:ring-offset-2 min-h-[44px]"
         >
           다시 시도
         </button>

@@ -1,1 +1,31 @@
 @import "tailwindcss";
+
+/* Tailwind CSS 4 방식: @theme 디렉티브로 모든 커스텀 설정 정의 */
+@theme {
+  /* 브랜드 컬러 */
+  --color-primary: #1E7F4F;
+  --color-primary-light: #2E9F6B;
+  --color-primary-dark: #0F3D2E;
+  --color-secondary: #0F3D2E;
+  --color-accent: #F2C94C;
+  --color-background: #F7F8F7;
+  --color-text-primary: #1F2933;
+  --color-text-secondary: #6B7280;
+  --color-text-tertiary: #9CA3AF;
+  
+  /* 폰트 패밀리 */
+  --font-family-sans: 'Pretendard', 'SUIT', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+}
+
+/* 전역 스타일 */
+body {
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-sans);
+}
+
+/* 접근성: 포커스 링 스타일 */
+*:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}

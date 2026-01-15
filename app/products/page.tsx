@@ -18,7 +18,9 @@ export default function ProductsPage() {
   return (
     <Container>
       {/* 즉시 렌더링되는 부분 - 사용자가 즉시 화면 구조를 인지 */}
-      <h1 className="text-2xl font-bold mb-6">상품 목록</h1>
+      <h1 className="text-2xl md:text-3xl font-bold mb-6 text-[#1F2933]">
+        상품 목록
+      </h1>
       
       {/* Suspense boundary - 상품 목록만 스트리밍 */}
       <section aria-labelledby="products-heading">

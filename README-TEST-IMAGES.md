@@ -1,0 +1,37 @@
+# 이미지 테스트 가이드
+
+## 이미지 테스트 활성화 방법
+
+### 1. 환경 변수 설정
+
+`.env.local` 파일을 생성하고 다음을 추가하세요:
+
+```bash
+NEXT_PUBLIC_ENABLE_TEST_IMAGES=true
+```
+
+### 2. 개발 서버 재시작
+
+환경 변수를 변경한 후 개발 서버를 재시작하세요:
+
+```bash
+npm run dev
+```
+
+## 테스트 이미지 URL
+
+`lib/test-images.ts` 파일에 정의된 테스트 이미지 URL들:
+
+- Placeholder 이미지 (브랜드 컬러)
+- Picsum 랜덤 이미지
+- Unsplash 이미지
+
+## 사용 방법
+
+1. **환경 변수로 활성화**: 위의 방법으로 활성화하면 API 응답의 `image`가 `null`일 때 자동으로 테스트 이미지가 사용됩니다.
+
+2. **수동으로 이미지 추가**: `public/` 폴더에 이미지 파일을 추가하고, `ProductCard` 컴포넌트에서 직접 사용할 수 있습니다.
+
+## 비활성화
+
+`.env.local` 파일에서 `NEXT_PUBLIC_ENABLE_TEST_IMAGES`를 제거하거나 `false`로 설정하면 테스트 이미지가 비활성화됩니다.
